@@ -82,6 +82,35 @@ app.patch('/api/orders/:id/status', async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 });
+// ── GET /api/orders/ref/:paymentRef ──────────────────────────────────────────
+app.get('/api/orders/ref/:paymentRef', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('payment_ref', req.params.paymentRef)
+      .single();
+    if (error) throw error;
+    res.json({ success: true, order: data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ── GET /api/admin/orders ─────────────────────────────────────────────────────
+app.get('/api/admin/orders', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('orders')
+      .select('*')
+      .neq('status', 'delivered')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json({ success: true, orders: data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Supabase URL: ${process.env.SUPABASE_URL}`);
