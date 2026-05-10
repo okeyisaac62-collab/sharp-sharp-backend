@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharp Sharp • Staff Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg: #0a0f1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: rgba(255,255,255,0.07);
+    --accent: #16a34a;
+    --accent2: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(ellipse at 0% 0%, rgba(22,163,74,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(34,197,94,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── LOGIN SCREEN ── */
+#loginScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+}
+
+.login-box {
+    width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 1;
+}
+
+.login-box::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, rgba(22,163,74,0.3), transparent, rgba(22,163,74,0.1));
+    z-index: -1;
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-logo h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--accent2);
+    letter-spacing: -0.5px;
+}
+
+.login-logo p {
+    font-size: 14px;
+    color: var(--text3);
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.login-field {
+    margin-bottom: 20px;
+}
+
+.login-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.login-field input {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.login-field input:focus {
+    border-color: var(--accent);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.login-btn:hover {
+    background: #15803d;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(22,163,74,0.3);
+}
+
+.login-error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 12px;
+    text-align: center;
+    display: none;
+}
+
+/* ── MAIN DASHBOARD ── */
+#dashboard {
+    display: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── HEADER ── */
+.dash-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgba(10,15,26,0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    z-index: 100;
+}
+
+.dash-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dash-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--accent2);
+}
+
+.dash-logo small {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: block;
+    line-height: 1;
+}
+
+.dash-header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.staff-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.staff-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.refresh-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.refresh-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent2);
+}
+
+.logout-link {
+    color: var(--text3);
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.logout-link:hover { color: var(--danger); }
+
+/* ── MAIN CONTENT ── */
+.dash-main {
+    padding: 90px 32px 40px;
+}
+
+/* ── STATS STRIP ── */
+.stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover { transform: translateY(-2px); }
+
+.stat-icon {
+    font-size: 32px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-radius: 14px;
+}
+
+.stat-info p {
+    font-size: 12px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.stat-info h3 {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ── FILTERS ── */
+.filters-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+.filters-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-orders {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    width: 220px;
+    transition: border 0.2s;
+}
+
+.search-orders:focus { border-color: var(--accent); }
+.search-orders::placeholder { color: var(--text3); }
+
+/* ── ORDERS TABLE ── */
+.orders-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.orders-table thead tr {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+}
+
+.orders-table th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.orders-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+
+.orders-table tbody tr:last-child { border-bottom: none; }
+.orders-table tbody tr:hover { background: var(--surface2); }
+
+.orders-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text);
+    vertical-align: middle;
+}
+
+.customer-info strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.customer-info small {
+    color: var(--text3);
+    font-size: 12px;
+}
+
+.items-list {
+    max-width: 220px;
+}
+
+.item-tag {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 2px 2px 2px 0;
+    color: var(--text2);
+}
+
+.order-total {
+    font-weight: 700;
+    color: var(--accent2);
+    font-size: 15px;
+}
+
+.order-time {
+    color: var(--text3);
+    font-size: 12px;
+}
+
+.payment-ref {
+    color: var(--text3);
+    font-size: 11px;
+    font-family: monospace;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── STATUS BADGE ── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.pending {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245,158,11,0.3);
+}
+
+.status-badge.preparing {
+    background: rgba(59,130,246,0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59,130,246,0.3);
+}
+
+.status-badge.ready {
+    background: rgba(22,163,74,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(22,163,74,0.3);
+}
+
+.status-badge.delivered {
+    background: rgba(100,116,139,0.15);
+    color: var(--text3);
+    border: 1px solid rgba(100,116,139,0.3);
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ── STATUS SELECT ── */
+.status-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: border 0.2s;
+}
+
+.status-select:focus { border-color: var(--accent); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text3);
+}
+
+.empty-state .empty-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state p { font-size: 16px; }
+
+/* ── LOADING ── */
+.loading-state {
+    text-align: center;
+    padding: 60px;
+    color: var(--text3);
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ── */
+.staff-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    color: var(--text);
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    .dash-main { padding: 80px 16px 30px; }
+    .dash-header { padding: 0 16px; }
+    .orders-table { font-size: 12px; }
+    .orders-table th, .orders-table td { padding: 10px 12px; }
+    .filters-bar { gap: 8px; }
+    .search-orders { width: 160px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">
+            <h1>Sharp Sharp</h1>
+            <p>Staff Portal</p>
+        </div>
+        <div class="login-field">
+            <label>Staff ID / Username</label>
+            <input type="text" id="staffUsername" placeholder="Enter staff ID" autocomplete="off">
+        </div>
+        <div class="login-field">
+            <label>Password</label>
+            <input type="password" id="staffPassword" placeholder="Enter password">
+        </div>
+        <button class="login-btn" onclick="staffLogin()">Access Dashboard</button>
+        <p class="login-error" id="loginError">Invalid credentials. Try again.</p>
+        <p style="text-align:center; margin-top:20px; font-size:12px; color:#475569;">
+            Default: username <strong>staff</strong> / password <strong>sharpsharp</strong>
+        </p>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+    <!-- HEADER -->
+    <div class="dash-header">
+        <div class="dash-logo">
+            <div>
+                <span>Sharp Sharp</span>
+                <small>Staff Portal</small>
+            </div>
+        </div>
+        <div class="dash-header-right">
+            <div class="staff-badge">
+                <div class="staff-dot"></div>
+                <span id="staffName">Staff</span>
+            </div>
+            <button class="refresh-btn" onclick="loadOrders()">⟳ Refresh</button>
+            <span class="logout-link" onclick="staffLogout()">Logout</span>
+        </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+
+        <!-- STATS -->
+        <div class="stats-strip">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <p>Total Orders</p>
+                    <h3 id="statTotal">0</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <p>Pending</p>
+                    <h3 id="statPending">0</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🍳</div>
+                <div class="stat-info">
+                    <p>Preparing</p>
+                    <h3 id="statPreparing">0</h3>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <p>Revenue Today</p>
+                    <h3 id="statRevenue">₦0</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters-bar">
+            <button class="filter-btn active" onclick="filterOrders('all', this)">All Orders</button>
+            <button class="filter-btn" onclick="filterOrders('pending', this)">Pending</button>
+            <button class="filter-btn" onclick="filterOrders('preparing', this)">Preparing</button>
+            <button class="filter-btn" onclick="filterOrders('ready', this)">Ready</button>
+            <button class="filter-btn" onclick="filterOrders('delivered', this)">Delivered</button>
+            <div class="filters-right">
+                <input type="text" class="search-orders" id="searchOrders" placeholder="Search customer..." oninput="searchOrders()">
+            </div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="orders-section">
+            <h2>Orders</h2>
+            <div id="ordersContainer">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading orders...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="staff-toast" id="staffToast">
+    <span>✅</span>
+    <span id="toastMsg"></span>
+</div>
+
+<script>
+// ==================== CONFIG ====================
+const BACKEND = "https://sharp-sharp-backend.onrender.com";
+
+// Staff accounts — add more as needed
+const STAFF_ACCOUNTS = [
+    { username: "staff", password: "sharpsharp", name: "Staff" },
+    { username: "admin", password: "admin123", name: "Admin" },
+    { username: "kitchen", password: "kitchen1", name: "Kitchen Staff" }
+];
+
+let allOrders = [];
+let currentFilter = "all";
+
+// ==================== LOGIN ====================
+function staffLogin() {
+    const username = document.getElementById("staffUsername").value.trim();
+    const password = document.getElementById("staffPassword").value.trim();
+    const errorEl = document.getElementById("loginError");
+
+    const match = STAFF_ACCOUNTS.find(a => a.username === username && a.password === password);
+
+    if (match) {
+        sessionStorage.setItem("sharpStaff", JSON.stringify(match));
+        errorEl.style.display = "none";
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        document.getElementById("staffName").textContent = match.name;
+        loadOrders();
+        // Auto-refresh every 30 seconds
+        setInterval(loadOrders, 30000);
+    } else {
+        errorEl.style.display = "block";
+    }
+}
+
+// Allow Enter key to login
+document.getElementById("staffPassword").addEventListener("keypress", e => {
+    if (e.key === "Enter") staffLogin();
+});
+document.getElementById("staffUsername").addEventListener("keypress", e => {
+    if (e.key === "Enter") staffLogin();
+});
+
+function staffLogout() {
+    if (confirm("Log out of Staff Portal?")) {
+        sessionStorage.removeItem("sharpStaff");
+        document.getElementById("loginScreen").style.display = "flex";
+        document.getElementById("dashboard").style.display = "none";
+        document.getElementById("staffUsername").value = "";
+        document.getElementById("staffPassword").value = "";
+    }
+}
+
+// Check if already logged in
+const savedStaff = sessionStorage.getItem("sharpStaff");
+if (savedStaff) {
+    const staff = JSON.parse(savedStaff);
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("staffName").textContent = staff.name;
+    loadOrders();
+    setInterval(loadOrders, 30000);
+}
+
+// ==================== LOAD ORDERS ====================
+async function loadOrders() {
+    try {
+        const res = await fetch(BACKEND + "/api/orders");
+        const data = await res.json();
+
+        if (data.success) {
+            allOrders = data.orders;
+            updateStats();
+            renderOrders();
+        }
+    } catch (err) {
+        document.getElementById("ordersContainer").innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">⚠️</div>
+                <p>Could not load orders. Check your connection.</p>
+            </div>
+        `;
+    }
+}
+
+// ==================== STATS ====================
+function updateStats() {
+    const today = new Date().toDateString();
+    const todayOrders = allOrders.filter(o => new Date(o.created_at).toDateString() === today);
+
+    document.getElementById("statTotal").textContent = allOrders.length;
+    document.getElementById("statPending").textContent = allOrders.filter(o => o.status === "pending").length;
+    document.getElementById("statPreparing").textContent = allOrders.filter(o => o.status === "preparing").length;
+    const revenue = todayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+    document.getElementById("statRevenue").textContent = "₦" + revenue.toLocaleString();
+}
+
+// ==================== RENDER ORDERS ====================
+function renderOrders(orders = null) {
+    const list = orders || getFilteredOrders();
+    const container = document.getElementById("ordersContainer");
+
+    if (list.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <p>No orders found</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = `
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Payment Ref</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody id="ordersBody"></tbody>
+        </table>
+    `;
+
+    const tbody = document.getElementById("ordersBody");
+    list.forEach(order => {
+        const row = document.createElement("tr");
+        const items = Array.isArray(order.items)
+            ? order.items.map(i => `<span class="item-tag">${i.name}${i.qty > 1 ? ' ×'+i.qty : ''}</span>`).join('')
+            : '<span class="item-tag">—</span>';
+
+        const time = new Date(order.created_at);
+        const timeStr = time.toLocaleDateString('en-NG', { day:'numeric', month:'short' }) +
+                        ' • ' + time.toLocaleTimeString('en-NG', { hour:'2-digit', minute:'2-digit' });
+
+        row.innerHTML = `
+            <td>
+                <div class="customer-info">
+                    <strong>${order.customer_name || 'Guest'}</strong>
+                    <small>${order.customer_email || ''}</small>
+                </div>
+            </td>
+            <td><div class="items-list">${items}</div></td>
+            <td><span class="order-total">₦${(order.total || 0).toLocaleString()}</span></td>
+            <td><span class="payment-ref" title="${order.payment_ref || ''}">${order.payment_ref || '—'}</span></td>
+            <td><span class="order-time">${timeStr}</span></td>
+            <td><span class="status-badge ${order.status}">${order.status}</span></td>
+            <td>
+                <select class="status-select" onchange="updateStatus('${order.id}', this.value)">
+                    <option value="pending" ${order.status==='pending'?'selected':''}>Pending</option>
+                    <option value="preparing" ${order.status==='preparing'?'selected':''}>Preparing</option>
+                    <option value="ready" ${order.status==='ready'?'selected':''}>Ready</option>
+                    <option value="delivered" ${order.status==='delivered'?'selected':''}>Delivered</option>
+                </select>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// ==================== FILTER ====================
+function getFilteredOrders() {
+    if (currentFilter === "all") return allOrders;
+    return allOrders.filter(o => o.status === currentFilter);
+}
+
+function filterOrders(status, btn) {
+    currentFilter = status;
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderOrders();
+}
+
+function searchOrders() {
+    const query = document.getElementById("searchOrders").value.toLowerCase().trim();
+    if (!query) { renderOrders(); return; }
+    const filtered = allOrders.filter(o =>
+        (o.customer_name || "").toLowerCase().includes(query) ||
+        (o.customer_email || "").toLowerCase().includes(query) ||
+        (o.payment_ref || "").toLowerCase().includes(query)
+    );
+    renderOrders(filtered);
+}
+
+// ==================== UPDATE STATUS ====================
+async function updateStatus(orderId, newStatus) {
+    try {
+        const res = await fetch(BACKEND + "/api/orders/" + orderId + "/status", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+            // Update locally
+            const order = allOrders.find(o => o.id === orderId);
+            if (order) order.status = newStatus;
+            updateStats();
+            renderOrders();
+            showToast("Order updated to " + newStatus);
+        }
+    } catch (err) {
+        showToast("Failed to update order");
+    }
+}
+
+// ==================== TOAST ====================
+function showToast(msg) {
+    const toast = document.getElementById("staffToast");
+    document.getElementById("toastMsg").textContent = msg;
+    toast.style.display = "flex";
+    setTimeout(() => toast.style.display = "none", 3000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,3316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharp Sharp • Campus Delivery</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --bg-color: #f8fafc;
+    --text-color: #0f172a;
+    --card-bg: #ffffff;
+    --header-bg: rgba(255, 255, 255, 0.95);
+    --accent: #16a34a;
+    --accent-hover: #15803d;
+    --success: #10b981;
+    --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 25px 50px -12px rgba(22, 163, 74, 0.25);
+    --border-radius: 24px;
+}
+[data-theme="dark"] {
+    --bg-color: #0f172a;
+    --text-color: #f1f5f9;
+    --card-bg: #1e2937;
+    --header-bg: rgba(30, 41, 59, 0.98);
+    --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 25px 50px -12px rgba(22, 163, 74, 0.35);
+}
+body {
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-top: 85px;
+    overflow-x: hidden;
+}
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(22,163,74,0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 60%, rgba(16,185,129,0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(22,163,74,0.10) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* WARNING RIBBON */
+.warning-ribbon {
+    background: linear-gradient(90deg, #16a34a, #15803d);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 12px 0;
+    overflow: hidden;
+    z-index: 1999;
+    box-shadow: 0 6px 20px rgba(22, 163, 74, 0.3);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+.warning-ribbon-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 50px;
+    animation: ribbonScroll 20s linear infinite;
+    padding-right: 50px;
+    will-change: transform;
+}
+.warning-ribbon .caution-icon {
+    font-size: 20px;
+    animation: cautionPulse 1.5s infinite ease-in-out;
+}
+@keyframes ribbonScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+@keyframes cautionPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* HEADER */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 85px;
+    box-shadow: var(--shadow);
+    z-index: 2000;
+    border-bottom: 1px solid rgba(22, 163, 74, 0.15);
+}
+.header-left {
+    display: flex;
+    align-items: center;
+    font-weight: 900;
+    font-size: 28px;
+    letter-spacing: -1px;
+    color: var(--accent);
+}
+.header-left img {
+    width: 52px;
+    height: 52px;
+    margin-right: 14px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+}
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.cart-header-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.cart-header-btn:hover {
+    background: rgba(22, 163, 74, 0.1);
+    transform: scale(1.1);
+}
+.cart-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #ef4444;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    padding: 0 6px;
+    border: 2px solid var(--card-bg);
+    transition: all 0.3s ease;
+}
+/* FIX: Hide badge when empty */
+.cart-badge:empty {
+    display: none;
+}
+[data-theme="dark"] .cart-badge {
+    background: #f87171;
+    color: #0f172a;
+    box-shadow: 0 2px 10px rgba(248, 113, 113, 0.6);
+    border: 2px solid var(--card-bg);
+}
+.header-btn, .contact-btn, .theme-toggle {
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+.header-btn {
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+}
+.header-btn:hover {
+    background: var(--accent);
+    color: white;
+}
+.contact-btn {
+    background: var(--accent);
+    color: white;
+}
+.contact-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
+.theme-toggle {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: var(--card-bg);
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    color: #64748b;
+}
+.theme-toggle:hover {
+    transform: rotate(30deg);
+}
+
+/* USER PROFILE SECTION */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+.user-profile:hover {
+    background: rgba(22, 163, 74, 0.1);
+}
+.user-profile-icon {
+    font-size: 34px;
+    line-height: 1;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(22, 163, 74, 0.15);
+    border-radius: 50%;
+    color: var(--accent);
+}
+.logout-btn-img {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+}
+.logout-btn-img:hover {
+    transform: scale(1.15);
+    background: rgba(239, 68, 68, 0.15);
+}
+.logout-btn-img::after {
+    content: "Logout";
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f172a;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.logout-btn-img:hover::after {
+    opacity: 1;
+    bottom: -38px;
+}
+
+/* HERO */
+.hero {
+    position: relative;
+    height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75) contrast(1.1);
+}
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(15,23,42,0.75), rgba(15,23,42,0.45));
+    pointer-events: none;
+}
+.hero-text {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 720px;
+    padding: 0 20px;
+}
+.hero-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    color: white;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    letter-spacing: -2px;
+}
+.hero-text p {
+    font-size: 20px;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 40px;
+}
+.hero-search {
+    display: flex;
+    justify-content: center;
+}
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
+}
+.search-wrapper input {
+    width: 100%;
+    padding: 22px 32px 22px 28px;
+    border-radius: 60px;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    background: rgba(255,255,255,0.98);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 20px 40px rgba(22, 163, 74, 0.25);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--text-color);
+}
+.search-wrapper input::placeholder {
+    color: #64748b;
+}
+[data-theme="dark"] .search-wrapper input {
+    background: rgba(30, 41, 59, 0.95);
+    color: #ffffff;
+    box-shadow: 0 20px 40px rgba(22, 163, 74, 0.35);
+}
+[data-theme="dark"] .search-wrapper input::placeholder {
+    color: #e2e8f0;
+}
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--accent);
+    border: none;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+}
+.search-btn:hover {
+    background: var(--accent-hover);
+    transform: translateY(-50%) scale(1.1);
+}
+#suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    margin-top: 8px;
+    max-height: 280px;
+    overflow-y: auto;
+    display: none;
+    z-index: 99999;
+    padding: 8px 0;
+}
+#suggestions div {
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+#suggestions div:hover {
+    background: #f1f5f9;
+}
+[data-theme="dark"] #suggestions {
+    background: var(--card-bg);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] #suggestions div {
+    color: var(--text-color);
+}
+[data-theme="dark"] #suggestions div:hover {
+    background: #334155;
+}
+
+/* SPECIAL PACKS */
+.special-section {
+    padding: 80px 40px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+.special-section::before {
+    content: "🔥 Campus Hits 🔥";
+    position: absolute;
+    top: 35px;
+    left: 40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: rgba(255,255,255,0.95);
+    z-index: 2;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+[data-theme="dark"] .special-section::before {
+    color: #ffffff;
+}
+.special-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+.special-left {
+    flex: 1;
+    max-width: 460px;
+}
+.special-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+.special-left p {
+    font-size: 19px;
+    opacity: 0.95;
+    margin-bottom: 32px;
+    color: #ffffff;
+}
+.carousel-container {
+    flex: 2;
+    position: relative;
+    max-width: 820px;
+    height: 380px;
+    perspective: 1600px;
+    user-select: none;
+}
+.carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.carousel-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    max-width: 390px;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #0f172a;
+    transform: translate(-50%, -50%) scale(0.82) rotateY(-10deg);
+    opacity: 0.72;
+    z-index: 1;
+}
+.carousel-card.active {
+    transform: translate(-50%, -50%) scale(1.05) rotateY(0deg);
+    opacity: 1;
+    z-index: 20;
+    box-shadow: 0 40px 80px rgba(22, 163, 74, 0.5);
+}
+.carousel-card.prev {
+    transform: translate(-85%, -50%) scale(0.88) rotateY(-18deg);
+    opacity: 0.82;
+    z-index: 10;
+}
+.carousel-card.next {
+    transform: translate(-15%, -50%) scale(0.88) rotateY(18deg);
+    opacity: 0.82;
+    z-index: 10;
+}
+.carousel-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.carousel-card-body {
+    padding: 16px;
+}
+.carousel-card-body h4 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.carousel-price {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+.carousel-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+.carousel-qty {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 6px;
+    border-radius: 12px;
+}
+[data-theme="dark"] .carousel-qty {
+    background: #334155;
+}
+.carousel-qty-btn {
+    background: var(--accent);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.carousel-qty-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.95);
+    color: #0f172a;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 30;
+    transition: all 0.3s;
+}
+.carousel-arrow:hover {
+    background: #fff;
+    color: var(--accent);
+    transform: translateY(-50%) scale(1.1);
+}
+[data-theme="dark"] .carousel-arrow {
+    background: rgba(30,41,59,0.95);
+    color: #ffffff;
+}
+[data-theme="dark"] .carousel-arrow:hover {
+    background: #475569;
+    color: var(--accent);
+}
+.carousel-prev { left: -10px; }
+.carousel-next { right: -10px; }
+
+/* MENU SECTION */
+.section {
+    padding: 60px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    /* FIX: scroll reveal starting state */
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.section.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+.section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--text-color);
+    text-align: center;
+}
+.scroll {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+}
+.scroll::-webkit-scrollbar {
+    display: none;
+}
+.card {
+    min-width: 230px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+[data-theme="dark"] .card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+.card:hover {
+    transform: translateY(-14px) scale(1.04);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(22, 163, 74, 0.3);
+}
+.card-meta {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.95);
+    padding: 4px 12px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 10;
+    color: #0f172a;
+}
+[data-theme="dark"] .card-meta {
+    background: rgba(30,41,59,0.95);
+    color: #f1f5f9;
+}
+.variant-slideshow {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
+}
+.variant-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+.variant-slide.active {
+    opacity: 1;
+}
+.variant-slide img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.card:hover .variant-slide img {
+    transform: scale(1.08);
+}
+.variant-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.85);
+    color: #0f172a;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 15;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+}
+[data-theme="dark"] .variant-nav {
+    background: rgba(30,41,59,0.85);
+    color: #f1f5f9;
+}
+.variant-nav:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-50%) scale(1.08);
+}
+.variant-prev { left: 8px; }
+.variant-next { right: 8px; }
+.card-body {
+    padding: 18px;
+}
+.card-body h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.price {
+    color: var(--success);
+    font-weight: 700;
+    font-size: 19px;
+    margin-bottom: 8px;
+}
+.qty-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 6px;
+    border-radius: 12px;
+}
+[data-theme="dark"] .qty-control {
+    background: #334155;
+}
+.qty-btn {
+    background: var(--accent);
+    border: none;
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+.qty-btn:hover {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+
+/* CART DRAWER */
+.cart-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--success);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+.cart-float:hover {
+    transform: scale(1.08);
+}
+[data-theme="dark"] .cart-float {
+    background: #10b981;
+    color: #0f172a;
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.6);
+}
+.cart-panel {
+    position: fixed;
+    top: 85px;
+    right: -440px;
+    width: 420px;
+    height: calc(100vh - 85px);
+    background: var(--card-bg);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    border-radius: 24px 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    z-index: 3000;
+    transition: right 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow: hidden;
+}
+.cart-panel.active {
+    right: 0;
+}
+.cart-panel-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+}
+.cart-panel-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+.cart-panel-header button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+}
+.cart-panel-header button:hover {
+    background: #f1f5f9;
+}
+[data-theme="dark"] .cart-panel-header button:hover {
+    background: #334155;
+}
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 24px;
+}
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 16px;
+}
+.cart-item:last-child {
+    border-bottom: none;
+}
+.cart-item-info {
+    flex: 1;
+}
+.cart-item-name {
+    font-weight: 600;
+    font-size: 16px;
+    display: block;
+}
+.cart-item-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8fafc;
+    padding: 4px;
+    border-radius: 9999px;
+    margin-top: 8px;
+}
+[data-theme="dark"] .cart-item-qty-controls {
+    background: #334155;
+}
+.qty-btn-small {
+    background: var(--accent);
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.qty-btn-small:hover {
+    background: var(--accent-hover);
+    transform: scale(1.1);
+}
+.cart-item-price {
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--success);
+}
+.cart-remove {
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+}
+.cart-summary {
+    padding: 24px;
+    border-top: 1px solid #e2e8f0;
+    background: var(--card-bg);
+}
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+.total-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.delivery-est {
+    text-align: center;
+    font-size: 14px;
+    color: #10b981;
+    margin-top: 12px;
+    font-weight: 600;
+}
+.checkout {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 18px;
+    width: 100%;
+    border-radius: 9999px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 16px;
+    transition: all 0.3s;
+    box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+}
+.checkout:hover {
+    background: var(--accent-hover);
+    transform: translateY(-3px);
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 100px;
+    left: 30px;
+    background: #16a34a;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(22, 163, 74, 0.4);
+    display: none;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    z-index: 9999;
+    animation: toastPop 0.4s ease;
+}
+@keyframes toastPop {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+/* FOOTER */
+.footer {
+    background: #0f172a;
+    color: #cbd5e1;
+    padding: 80px 40px 60px;
+    margin-top: 80px;
+}
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+.footer-logo {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 40px;
+}
+.footer-logo img {
+    width: 260px;
+    height: auto;
+    filter: brightness(0) invert(1);
+    display: block;
+    margin: 0 auto 16px auto;
+}
+.footer-logo p {
+    font-size: 15px;
+    opacity: 0.85;
+}
+.footer-links {
+    display: flex;
+    gap: 80px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+.footer-links h4 {
+    color: white;
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+.footer-links p {
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+.footer-links p:hover {
+    color: #16a34a;
+}
+.footer-bottom {
+    text-align: center;
+    margin-top: 60px;
+    opacity: 0.6;
+    font-size: 14px;
+    width: 100%;
+}
+
+/* SUCCESS PAGE */
+#successPage {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-color);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+    animation: successFadeIn 0.6s ease;
+}
+.success-content {
+    max-width: 420px;
+}
+#successPage h1 {
+    font-size: 68px;
+    margin-bottom: 16px;
+}
+#successPage p {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--text-color);
+}
+#successPage .order-ref {
+    font-size: 16px;
+    color: #64748b;
+    margin-bottom: 40px;
+}
+#successPage button {
+    padding: 16px 40px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+    transition: all 0.3s ease;
+}
+#successPage button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(22, 163, 74, 0.4);
+}
+@keyframes successFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* PROFILE MODAL */
+.profile-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.65);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+}
+.profile-container {
+    background: white;
+    width: 380px;
+    border-radius: 20px;
+    padding: 35px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+}
+[data-theme="dark"] .profile-container {
+    background: #1e2937;
+    color: #f1f5f9;
+}
+.profile-avatar {
+    font-size: 68px;
+    margin-bottom: 16px;
+}
+.profile-name {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.profile-info {
+    margin: 20px 0;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.6;
+}
+.logout-btn {
+    width: 100%;
+    padding: 14px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+/* MODALS */
+.login-modal, .signup-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.65);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+}
+.modal-container {
+    background: white;
+    width: 380px;
+    border-radius: 20px;
+    padding: 35px 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+[data-theme="dark"] .modal-container {
+    background: #1e2937;
+    color: #f1f5f9;
+}
+.modal-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.modal-logo img { width: 55px; }
+.modal-title {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.signup-title {
+    font-size: 24px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.3;
+}
+.input-group {
+    margin-bottom: 18px;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.input-field {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.3s;
+}
+.input-field:focus {
+    border-color: var(--accent);
+}
+.input-field.error {
+    border-color: #ef4444;
+}
+.error-message {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 5px;
+    display: none;
+}
+.password-wrapper {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #64748b;
+}
+.remember-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0 20px 0;
+    font-size: 14px;
+}
+.signin-btn, .signup-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.switch-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #64748b;
+}
+.switch-link a {
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* ============================================================
+   RESPONSIVE SYSTEM — iPod → Phone → Tablet → iPad → Laptop
+   ============================================================ */
+
+/* ---- Laptop / large tablet landscape (≤1280px) ---- */
+@media (max-width: 1280px) {
+    .section { padding: 60px 30px; }
+    .special-section { padding: 70px 30px; }
+    .how-it-works { padding: 90px 30px; }
+    .header { padding: 0 30px; }
+    .category-tabs { padding: 12px 30px; }
+}
+
+/* ---- Small laptop / tablet landscape (≤1024px) ---- */
+@media (max-width: 1024px) {
+    .section { padding: 50px 24px; }
+    .special-section { padding: 60px 24px; }
+    .how-it-works { padding: 80px 24px; }
+    .header { padding: 0 24px; }
+    .category-tabs { padding: 12px 24px; justify-content: flex-start; }
+    .carousel-container { max-width: 560px; height: 340px; }
+    .how-header h2 { font-size: 42px; }
+}
+
+/* ---- iPad / tablet portrait (≤900px) ---- */
+@media (max-width: 900px) {
+    .header { padding: 0 20px; height: 76px; }
+    body { padding-top: 76px; }
+    .header-left img { width: 44px; height: 44px; margin-right: 10px; }
+    .header-left { font-size: 22px; }
+    .header-btn, .contact-btn { padding: 9px 16px; font-size: 14px; }
+    .hero-text h1 { font-size: 52px; }
+    .section { padding: 44px 20px; }
+    .special-section { padding: 55px 20px; }
+    .special-wrapper { flex-direction: column; gap: 36px; }
+    .special-left { max-width: 100%; }
+    .special-left h1 { font-size: 36px; }
+    .carousel-container { max-width: 100%; height: 320px; width: 100%; }
+    .carousel-card { max-width: 340px; }
+    .how-it-works { padding: 70px 20px; }
+    .how-header h2 { font-size: 38px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .how-steps::before { display: none; }
+    .card { min-width: 220px; }
+    .cart-panel { width: 100%; height: calc(100vh - 76px); right: -100%; border-radius: 24px 24px 0 0; top: 76px; }
+    .cart-panel.active { right: 0; }
+    .category-tabs { top: 76px; padding: 10px 20px; justify-content: flex-start; }
+    .footer-links { gap: 50px; }
+}
+
+/* ---- Phablet / large phone (≤768px) ---- */
+@media (max-width: 768px) {
+    .header { padding: 0 16px; height: 70px; }
+    body { padding-top: 70px; }
+    .header-left img { width: 40px; height: 40px; margin-right: 8px; }
+    .header-left { font-size: 20px; }
+    .header-btn { display: none; } /* hide sign-in text btn on small screens */
+    .contact-btn { padding: 8px 14px; font-size: 13px; }
+    .theme-toggle { width: 40px; height: 40px; font-size: 18px; }
+    .cart-header-btn { width: 44px; height: 44px; font-size: 22px; }
+    .hero { height: 480px; }
+    .hero-text h1 { font-size: 42px; letter-spacing: -1px; }
+    .hero-text p { font-size: 17px; }
+    .search-wrapper input { font-size: 16px; padding: 18px 22px; }
+    .search-btn { width: 50px; height: 50px; }
+    .section { padding: 36px 16px; }
+    .section h2 { font-size: 28px; }
+    .special-section { padding: 50px 16px; }
+    .special-section::before { font-size: 26px; top: 20px; left: 16px; }
+    .special-left h1 { font-size: 30px; }
+    .special-left p { font-size: 16px; }
+    .carousel-container { height: 300px; }
+    .carousel-card { max-width: 300px; }
+    .carousel-card img { height: 160px; }
+    .carousel-arrow { width: 38px; height: 38px; font-size: 20px; }
+    .carousel-prev { left: 2px; }
+    .carousel-next { right: 2px; }
+    .card { min-width: 200px; }
+    .variant-slide img { height: 160px; }
+    .card-body h4 { font-size: 16px; }
+    .how-it-works { padding: 60px 16px; }
+    .how-header h2 { font-size: 32px; }
+    .how-header p { font-size: 16px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .step-icon-wrap { width: 64px; height: 64px; font-size: 28px; }
+    .how-step { padding: 28px 16px 24px; }
+    .how-step h3 { font-size: 16px; }
+    .how-step p { font-size: 13px; }
+    .cart-float { padding: 13px 18px; font-size: 15px; bottom: 20px; right: 16px; }
+    .cart-panel { width: 100%; height: calc(100vh - 70px); right: -100%; border-radius: 20px 20px 0 0; top: 70px; }
+    .cart-panel.active { right: 0; }
+    .category-tabs { top: 70px; padding: 10px 16px; gap: 8px; justify-content: flex-start; }
+    .category-tab { padding: 7px 16px; font-size: 13px; }
+    .footer { padding: 60px 16px 40px; }
+    .footer-logo img { width: 180px; }
+    .footer-links { gap: 30px; }
+    .modal-container { width: 95%; padding: 28px 20px; }
+    .toast { left: 16px; bottom: 80px; padding: 13px 18px; font-size: 14px; }
+    .profile-dropdown-menu { min-width: 180px; }
+}
+
+/* ---- Regular phone (≤480px) ---- */
+@media (max-width: 480px) {
+    .header { height: 66px; padding: 0 14px; }
+    body { padding-top: 66px; }
+    .header-left img { width: 36px; height: 36px; }
+    .header-left { font-size: 18px; letter-spacing: -0.5px; }
+    .contact-btn { padding: 7px 12px; font-size: 12px; }
+    .hero { height: 440px; }
+    .hero-text h1 { font-size: 34px; line-height: 1.1; }
+    .hero-text p { font-size: 15px; margin-bottom: 28px; }
+    .search-wrapper { max-width: 100%; }
+    .search-wrapper input { font-size: 15px; padding: 16px 18px; }
+    .search-btn { width: 46px; height: 46px; right: 6px; }
+    .section { padding: 30px 14px; }
+    .section h2 { font-size: 25px; margin-bottom: 20px; }
+    .card { min-width: 185px; }
+    .scroll { gap: 16px; }
+    .variant-slide img { height: 148px; }
+    .carousel-container { height: 280px; }
+    .carousel-card { max-width: 260px; }
+    .carousel-card img { height: 144px; }
+    .carousel-card-body { padding: 12px; }
+    .carousel-card-body h4 { font-size: 15px; }
+    .carousel-price { font-size: 16px; }
+    .special-section { padding: 44px 14px; }
+    .special-section::before { font-size: 22px; }
+    .special-left h1 { font-size: 26px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .how-header h2 { font-size: 26px; letter-spacing: -1px; }
+    .step-icon-wrap { width: 56px; height: 56px; font-size: 24px; border-radius: 18px; }
+    .how-step { padding: 22px 12px 18px; border-radius: 18px; }
+    .how-step h3 { font-size: 14px; }
+    .how-step p { font-size: 12px; line-height: 1.6; }
+    .step-number { font-size: 10px; padding: 3px 8px; }
+    .cart-float { padding: 11px 16px; font-size: 14px; bottom: 16px; right: 12px; }
+    .cart-panel { top: 66px; height: calc(100vh - 66px); }
+    .category-tabs { top: 66px; gap: 6px; }
+    .category-tab { padding: 6px 14px; font-size: 12px; }
+    .footer { padding: 50px 14px 36px; margin-top: 50px; }
+    .footer-logo img { width: 160px; }
+    .footer-links { flex-direction: column; gap: 24px; align-items: center; text-align: center; }
+    .footer-links h4 { margin-bottom: 10px; }
+    .footer-bottom { margin-top: 40px; font-size: 13px; }
+    .modal-container { width: 96%; padding: 24px 16px; border-radius: 16px; max-height: 95vh; }
+    .modal-title { font-size: 22px; }
+    .signup-title { font-size: 20px; }
+    .input-field { padding: 12px 14px; font-size: 14px; }
+    .signin-btn, .signup-btn { padding: 13px; font-size: 15px; }
+    .cart-panel-header h3 { font-size: 20px; }
+    .checkout { padding: 15px; font-size: 15px; }
+    #successPage { padding: 24px; }
+    #successPage h1 { font-size: 52px; }
+    #successPage p { font-size: 18px; }
+    .profile-container { width: 92%; padding: 28px 20px; }
+}
+
+/* ---- Small phone (≤375px) ---- */
+@media (max-width: 375px) {
+    .header { height: 62px; padding: 0 12px; gap: 8px; }
+    body { padding-top: 62px; }
+    .header-left img { width: 32px; height: 32px; margin-right: 6px; }
+    .header-left { font-size: 16px; }
+    .header-right { gap: 8px; }
+    .contact-btn { padding: 6px 10px; font-size: 11px; }
+    .theme-toggle { width: 36px; height: 36px; font-size: 16px; }
+    .cart-header-btn { width: 38px; height: 38px; font-size: 20px; }
+    .hero { height: 400px; }
+    .hero-text h1 { font-size: 29px; }
+    .hero-text > div { font-size: 12px; padding: 6px 14px; }
+    .search-wrapper input { padding: 14px 16px; font-size: 14px; }
+    .search-btn { width: 42px; height: 42px; }
+    .section h2 { font-size: 22px; }
+    .card { min-width: 170px; }
+    .variant-slide img { height: 138px; }
+    .how-header h2 { font-size: 22px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .step-icon-wrap { width: 50px; height: 50px; font-size: 22px; border-radius: 14px; }
+    .how-step { padding: 20px 10px 16px; border-radius: 16px; }
+    .carousel-container { height: 260px; }
+    .carousel-card { max-width: 230px; }
+    .carousel-card img { height: 128px; }
+    .cart-panel { top: 62px; height: calc(100vh - 62px); }
+    .category-tabs { top: 62px; }
+    .modal-container { width: 98%; padding: 20px 14px; }
+}
+
+/* ---- iPod / very small device (≤320px) ---- */
+@media (max-width: 320px) {
+    .header { height: 58px; padding: 0 10px; }
+    body { padding-top: 58px; }
+    .header-left img { width: 28px; height: 28px; border-radius: 8px; }
+    .header-left { font-size: 14px; letter-spacing: 0; }
+    .header-right { gap: 6px; }
+    .contact-btn { display: none; } /* too cramped — sign-up still via hero CTA */
+    .theme-toggle { width: 34px; height: 34px; font-size: 15px; }
+    .cart-header-btn { width: 34px; height: 34px; font-size: 18px; }
+    .hero { height: 360px; }
+    .hero-text h1 { font-size: 24px; line-height: 1.15; letter-spacing: 0; }
+    .hero-text p { font-size: 13px; margin-bottom: 22px; }
+    .hero-text > div { font-size: 11px; padding: 5px 12px; margin-bottom: 14px; }
+    .search-wrapper input { padding: 13px 14px; font-size: 13px; }
+    .search-btn { width: 38px; height: 38px; right: 4px; }
+    .section { padding: 24px 10px; }
+    .section h2 { font-size: 20px; }
+    .scroll { gap: 12px; }
+    .card { min-width: 155px; }
+    .variant-slide img { height: 125px; }
+    .card-body { padding: 12px; }
+    .card-body h4 { font-size: 14px; }
+    .price { font-size: 15px; }
+    .qty-btn { width: 28px; height: 28px; font-size: 16px; }
+    .special-section { padding: 36px 10px 30px; }
+    .special-section::before { font-size: 18px; top: 12px; left: 10px; }
+    .special-left h1 { font-size: 20px; }
+    .special-left p { font-size: 13px; }
+    .carousel-container { height: 240px; }
+    .carousel-card { max-width: 200px; }
+    .carousel-card img { height: 110px; }
+    .carousel-card-body { padding: 10px; }
+    .carousel-card-body h4 { font-size: 13px; }
+    .carousel-price { font-size: 14px; margin-bottom: 8px; }
+    .how-it-works { padding: 40px 10px; }
+    .how-header h2 { font-size: 19px; letter-spacing: -0.5px; }
+    .how-header p { font-size: 13px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .how-step { padding: 16px 8px 14px; border-radius: 14px; }
+    .step-icon-wrap { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; margin-bottom: 12px; }
+    .how-step h3 { font-size: 13px; margin-bottom: 6px; }
+    .how-step p { font-size: 11px; line-height: 1.5; }
+    .step-number { font-size: 9px; padding: 2px 6px; top: 10px; right: 10px; }
+    .cart-float { padding: 10px 14px; font-size: 13px; bottom: 12px; right: 10px; }
+    .cart-panel { top: 58px; height: calc(100vh - 58px); }
+    .category-tabs { top: 58px; padding: 8px 10px; gap: 6px; }
+    .category-tab { padding: 5px 12px; font-size: 11px; }
+    .footer { padding: 40px 10px 28px; margin-top: 40px; }
+    .footer-logo img { width: 130px; }
+    .footer-links { gap: 20px; }
+    .footer-bottom { font-size: 11px; }
+    .modal-container { width: 100%; border-radius: 16px 16px 0 0; position: fixed; bottom: 0; left: 0; max-height: 92vh; }
+    .login-modal, .signup-modal { align-items: flex-end; }
+    .modal-title { font-size: 20px; }
+    .input-field { padding: 11px 12px; font-size: 13px; }
+    .signin-btn, .signup-btn { padding: 12px; font-size: 14px; }
+    .toast { left: 10px; right: 10px; bottom: 70px; font-size: 13px; padding: 12px 16px; }
+    .profile-container { width: 96%; padding: 24px 16px; }
+    .cart-panel-header h3 { font-size: 18px; }
+    .cart-panel-header { padding: 18px 16px 12px; }
+    .cart-items { padding: 0 16px; }
+    .cart-summary { padding: 16px; }
+    .checkout { padding: 13px; font-size: 14px; }
+}
+
+/* PAGE LOAD ANIMATION */
+.header, .warning-ribbon, .hero, .special-section, #menuContainer, .footer {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+.header { animation-delay: 0s; }
+.warning-ribbon { animation-delay: 0.1s; }
+.hero { animation-delay: 0.2s; }
+.special-section { animation-delay: 0.3s; }
+#menuContainer { animation-delay: 0.4s; }
+.footer { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* FIX: badgeBounce animation (was missing — referenced in hero) */
+@keyframes badgeBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    40% { transform: translateY(-8px) scale(1.05); }
+    60% { transform: translateY(-4px) scale(1.02); }
+}
+
+@keyframes bounceEmpty {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+/* SKELETON LOADING */
+.skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 12px;
+}
+[data-theme="dark"] .skeleton {
+    background: linear-gradient(90deg, #1e2937 25%, #2d3748 50%, #1e2937 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.skeleton-card {
+    min-width: 230px;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+.skeleton-img { height: 180px; width: 100%; }
+.skeleton-body { padding: 18px; }
+.skeleton-title { height: 20px; width: 70%; margin-bottom: 10px; }
+.skeleton-price { height: 16px; width: 40%; margin-bottom: 12px; }
+.skeleton-btn { height: 34px; width: 100%; }
+
+/* STICKY CATEGORY TABS */
+.category-tabs {
+    position: sticky;
+    top: 85px;
+    z-index: 1500;
+    background: var(--bg-color);
+    padding: 12px 40px;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid rgba(22,163,74,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    justify-content: center;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+.category-tab {
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 2px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+.category-tab:hover, .category-tab.active {
+    background: var(--accent);
+    color: white;
+}
+.order-tracker {
+    position: fixed; bottom: 100px; right: 30px; width: 340px;
+    background: var(--card-bg); border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18); z-index: 2500;
+    transform: translateY(30px); opacity: 0; pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+    border: 1px solid rgba(22,163,74,0.15);
+}
+.order-tracker.visible { transform: translateY(0); opacity: 1; pointer-events: all; }
+.tracker-header {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white; padding: 16px 18px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.tracker-header-left { display: flex; align-items: center; gap: 10px; }
+.tracker-pulse {
+    width: 10px; height: 10px; background: #4ade80;
+    border-radius: 50%; position: relative; flex-shrink: 0;
+}
+.tracker-pulse::after {
+    content: ''; position: absolute; inset: -4px; border-radius: 50%;
+    background: rgba(74,222,128,0.4);
+    animation: trackerPulse 1.8s ease-in-out infinite;
+}
+@keyframes trackerPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.5); opacity: 0; }
+}
+.tracker-title { font-size: 15px; font-weight: 700; }
+.tracker-subtitle { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+.tracker-close {
+    background: rgba(255,255,255,0.2); border: none; color: white;
+    width: 28px; height: 28px; border-radius: 50%; font-size: 16px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.tracker-close:hover { background: rgba(255,255,255,0.35); }
+.tracker-body { padding: 20px 18px; }
+.tracker-stages { display: flex; flex-direction: column; }
+.tracker-stage { display: flex; align-items: flex-start; gap: 14px; position: relative; }
+.tracker-stage:not(:last-child)::after {
+    content: ''; position: absolute; left: 15px; top: 34px;
+    width: 2px; height: 26px; background: #e2e8f0; transition: background 0.5s;
+}
+[data-theme="dark"] .tracker-stage:not(:last-child)::after { background: #334155; }
+.tracker-stage.done:not(:last-child)::after { background: #16a34a; }
+.stage-icon {
+    width: 32px; height: 32px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; font-size: 15px;
+    flex-shrink: 0; background: #f1f5f9; border: 2px solid #e2e8f0;
+/* CONFETTI */
+.confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+    z-index: 99999;
+}
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* PROFILE DROPDOWN */
+.profile-dropdown {
+    position: relative;
+}
+.profile-dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid rgba(22,163,74,0.2);
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    min-width: 200px;
+    z-index: 9999;
+    overflow: hidden;
+    display: none;
+    animation: dropdownFade 0.2s ease;
+}
+.profile-dropdown-menu.open {
+    display: block;
+}
+@keyframes dropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.dropdown-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(22,163,74,0.1);
+    background: rgba(22,163,74,0.05);
+}
+.dropdown-header strong {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+.dropdown-header small {
+    font-size: 12px;
+    color: #94a3b8;
+}
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: background 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+}
+.dropdown-item:hover {
+    background: rgba(22,163,74,0.08);
+    color: var(--accent);
+}
+.dropdown-item.danger {
+    color: #ef4444;
+}
+.dropdown-item.danger:hover {
+    background: rgba(239,68,68,0.08);
+    color: #ef4444;
+}
+.dropdown-divider {
+    height: 1px;
+    background: rgba(22,163,74,0.1);
+    margin: 4px 0;
+}
+
+/* =========================================================
+   HOW IT WORKS — THEME-AWARE (FIX: was hardcoded dark)
+   ========================================================= */
+.how-it-works {
+    padding: 100px 40px;
+    background: var(--bg-color);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.4s ease;
+}
+.how-it-works::before {
+    content: '';
+    position: absolute;
+    top: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%);
+    pointer-events: none;
+}
+.how-it-works::after {
+    content: '';
+    position: absolute;
+    bottom: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%);
+    pointer-events: none;
+}
+.how-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+.how-header {
+    text-align: center;
+    margin-bottom: 70px;
+}
+.how-header .how-tag {
+    display: inline-block;
+    background: rgba(22,163,74,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(22,163,74,0.3);
+    padding: 6px 20px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.how-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    color: var(--text-color);
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+    line-height: 1.1;
+}
+.how-header h2 span {
+    color: var(--accent);
+}
+.how-header p {
+    font-size: 18px;
+    color: #64748b;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.how-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    position: relative;
+}
+.how-steps::before {
+    content: '';
+    position: absolute;
+    top: 52px;
+    left: 15%;
+    width: 70%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(22,163,74,0.4), rgba(34,197,94,0.6), rgba(22,163,74,0.4), transparent);
+    z-index: 0;
+}
+/* Light mode step cards */
+.how-step {
+    background: var(--card-bg);
+    border: 1px solid rgba(22,163,74,0.15);
+    box-shadow: var(--shadow);
+    border-radius: 24px;
+    padding: 36px 24px 32px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+/* Dark mode step cards */
+[data-theme="dark"] .how-step {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+}
+.how-step:hover {
+    transform: translateY(-12px);
+    background: rgba(22,163,74,0.08);
+    border-color: rgba(22,163,74,0.4);
+    box-shadow: 0 30px 60px rgba(22,163,74,0.15);
+}
+[data-theme="dark"] .how-step:hover {
+    background: rgba(22,163,74,0.1);
+    box-shadow: 0 30px 60px rgba(22,163,74,0.2);
+}
+.step-icon-wrap {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 36px;
+    box-shadow: 0 10px 30px rgba(22,163,74,0.4);
+    transition: transform 0.3s ease;
+}
+.how-step:hover .step-icon-wrap {
+    transform: scale(1.1) rotate(5deg);
+}
+.step-number {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--accent);
+    background: rgba(22,163,74,0.12);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(22,163,74,0.2);
+}
+.how-step h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-color);
+}
+.how-step p {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .how-it-works { padding: 60px 20px; }
+    .how-header h2 { font-size: 34px; }
+    .how-steps { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .how-steps::before { display: none; }
+}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<div class="header">
+    <div class="header-left">
+        <img src="logo.png" alt="Sharp Sharp">
+        <span>SHARP SHARP</span>
+    </div>
+    <div class="header-right" id="headerRight">
+        <button class="cart-header-btn" onclick="toggleCart()">
+            🛒
+            <span id="headerCartCount" class="cart-badge"></span>
+        </button>
+        <button class="header-btn" id="signInBtn">Sign In</button>
+        <button class="contact-btn" id="signUpBtn">Sign Up Free</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    </div>
+</div>
+<!-- WARNING RIBBON -->
+<div class="warning-ribbon">
+    <div class="warning-ribbon-content">
+        <span><span class="caution-icon">⚠️</span> Warning: Scrolling down may cause sudden hunger</span>
+        <span><span class="caution-icon">⚠️</span> Warning: Scrolling down may cause sudden hunger</span>
+        <span><span class="caution-icon">⚠️</span> Warning: Scrolling down may cause sudden hunger</span>
+        <span><span class="caution-icon">⚠️</span> Warning: Scrolling down may cause sudden hunger</span>
+        <span><span class="caution-icon">⚠️</span> Warning: Scrolling down may cause sudden hunger</span>
+    </div>
+</div>
+<!-- HERO -->
+<div class="hero">
+    <video autoplay muted loop playsinline class="bg-video">
+        <source src="food-video.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+    <div class="hero-text">
+        <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(22,163,74,0.9); color:white; padding:8px 20px; border-radius:50px; font-size:14px; font-weight:600; margin-bottom:20px; animation: badgeBounce 2s ease-in-out infinite;">
+            🍔 Order now, eat sharp sharp
+        </div>
+        <h1>Campus Delivery,<br>Sharp Sharp!</h1>
+        <p>Warning!! scrolling may cause sudden hunger</p>
+        <div class="hero-search">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" placeholder="What are you craving today?" autocomplete="off">
+                <button class="search-btn" onclick="performSearch()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+                <div id="suggestions"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- HOW IT WORKS -->
+<div class="how-it-works">
+    <div class="how-wrapper">
+        <div class="how-header">
+            <div class="how-tag">⚡ Simple Process</div>
+            <h2>Order food <span>sharp sharp</span><br>in 4 easy steps</h2>
+            <p>Getting your favourite campus food delivered has never been this easy</p>
+        </div>
+        <div class="how-steps">
+            <div class="how-step">
+                <div class="step-number">01</div>
+                <div class="step-icon-wrap">🔍</div>
+                <h3>Browse Menu</h3>
+                <p>Explore food from all campus kitchens — Cafeteria, Bakery, Alumni Kitchen and more</p>
+            </div>
+            <div class="how-step">
+                <div class="step-number">02</div>
+                <div class="step-icon-wrap">🛒</div>
+                <h3>Add to Cart</h3>
+                <p>Pick your favourites, choose your quantity and build your perfect order</p>
+            </div>
+            <div class="how-step">
+                <div class="step-number">03</div>
+                <div class="step-icon-wrap">💳</div>
+                <h3>Pay Securely</h3>
+                <p>Pay safely with Paystack — card, bank transfer or USSD. Fast and secure</p>
+            </div>
+            <div class="how-step">
+                <div class="step-number">04</div>
+                <div class="step-icon-wrap">🚀</div>
+                <h3>Get Delivered</h3>
+                <p>Sit back and relax. Your food gets delivered sharp sharp to your location</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- SPECIAL PACKS -->
+<div class="special-section">
+    <div class="special-wrapper">
+        <div class="special-left">
+            <h1>Campus Hits Delivered Hot</h1>
+            <p>Handpicked combos, lightning deals &amp; student favorites. Fresh from the kitchen, straight to your hostel in minutes.</p>
+        </div>
+        <div class="carousel-container">
+            <button class="carousel-arrow carousel-prev" onclick="prevSlide()">‹</button>
+            <div class="carousel-track" id="specialCarousel"></div>
+            <button class="carousel-arrow carousel-next" onclick="nextSlide()">›</button>
+        </div>
+    </div>
+</div>
+<!-- FLOATING CART -->
+<div class="cart-float" onclick="toggleCart()">
+    🛒 <span id="cartCount">0</span>
+</div>
+<!-- CART DRAWER -->
+<div id="cartPanel" class="cart-panel">
+    <div class="cart-panel-header">
+        <h3>Your Cart <span id="cartItemCountHeader">(0)</span></h3>
+        <button onclick="toggleCart()">
+            ✕ <span style="font-size:15px; font-weight:600;">Minimize</span>
+        </button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-summary">
+        <div class="summary-line">
+            <span>Subtotal</span>
+            <span id="subtotalPrice">₦0</span>
+        </div>
+        <div class="total-line">
+            <span>Total</span>
+            <span id="grandTotal">₦0</span>
+        </div>
+        <p class="delivery-est">🚀 Estimated arrival: <strong id="estTime">28 minutes</strong></p>
+        <button class="checkout" onclick="proceedToCheckout()">
+            Proceed to Checkout • ₦<span id="checkoutTotal">0</span>
+        </button>
+    </div>
+</div>
+<!-- CATEGORY TABS -->
+<div class="category-tabs" id="categoryTabs"></div>
+<!-- MENU -->
+<div id="menuContainer"></div>
+<!-- SUCCESS PAGE -->
+<div id="successPage">
+    <div class="success-content">
+        <h1>🎉</h1>
+        <p style="font-size:28px; font-weight:700; margin-bottom:8px;">Order Placed Successfully!</p>
+        <p style="font-size:19px; color:#10b981; margin-bottom:24px;">Thank you for shopping with Sharp Sharp</p>
+        <p id="orderRef" class="order-ref"></p>
+        <p style="font-size:15px; color:#64748b; margin-bottom:40px;">Your food is being prepared and will be delivered in about 30 minutes.</p>
+        <button onclick="closeSuccess()">Back to Menu</button>
+    </div>
+</div>
+<!-- ORDER TRACKER -->
+<div id="orderTracker" class="order-tracker">
+  <div class="tracker-header">
+    <div class="tracker-header-left">
+      <div class="tracker-pulse"></div>
+      <div>
+        <div class="tracker-title">Order Tracker</div>
+        <div class="tracker-subtitle" id="trackerRef">Ref: —</div>
+      </div>
+    </div>
+    <button class="tracker-close" onclick="hideTracker()">✕</button>
+  </div>
+  <div class="tracker-body">
+    <div class="tracker-stages" id="trackerStages"></div>
+  </div>
+</div>
+<!-- TOAST -->
+<div id="toast" class="toast">
+    <span>✅</span>
+    <span id="toastText"></span>
+</div>
+<!-- PROFILE MODAL -->
+<div class="profile-modal" id="profileModal">
+    <div class="profile-container">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-name" id="profileName">Hi, User</div>
+        <div class="profile-info">
+            <p><strong>Campus:</strong> <span id="profileCampus">Omu-Aran Campus</span></p>
+            <p><strong>Email:</strong> <span id="profileEmail">student@omu.edu.ng</span></p>
+            <p><strong>Member since:</strong> April 2026</p>
+        </div>
+        <button onclick="closeProfileModal()" style="margin-top:12px;background:none;border:none;color:#64748b;cursor:pointer;">Close</button>
+    </div>
+</div>
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-logo">
+            <img src="logo.png" alt="Sharp Sharp">
+            <p>Right at your hall door 🚀</p>
+        </div>
+        <div class="footer-links">
+            <div>
+                <h4>Follow Us</h4>
+                <p>Instagram</p>
+                <p>TikTok</p>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <p>FAQ</p>
+                <p>Contact Us</p>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <p>About Us</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2026 Sharp Sharp • Made for Campus Hustle
+    </div>
+</footer>
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+    <div class="modal-container">
+        <div class="modal-logo">
+            <img src="logo.png">
+            <span style="font-size:28px; font-weight:900; color:var(--accent);">SHARP SHARP</span>
+        </div>
+        <h2 class="modal-title">Welcome Back</h2>
+        <p style="color:#64748b;margin-bottom:25px;">Sign in to access campus food delivery</p>
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="text" id="loginUsername" class="input-field" placeholder="Enter your email address">
+            <div class="error-message" id="loginUsernameError"></div>
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="loginPassword" class="input-field" placeholder="Enter your password">
+                <button type="button" class="toggle-password" id="toggleLoginPassword">👁️</button>
+            </div>
+            <div class="error-message" id="loginPasswordError"></div>
+        </div>
+        <div class="remember-row">
+            <label><input type="checkbox" id="rememberMe"> Remember me</label>
+            <a href="#" style="color:var(--accent);">Forgot Password?</a>
+        </div>
+        <button class="signin-btn" onclick="handleSignIn()">Sign In with Email</button>
+        <div style="margin:15px 0; color:#94a3b8; font-size:14px;">OR</div>
+        <button class="google-btn" onclick="signInWithGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" alt="Google">
+            Continue with Google
+        </button>
+        <div class="switch-link">
+            Don't have a Sharp account?
+            <a onclick="switchToSignup()">Sign up here</a>
+        </div>
+        <button onclick="closeLoginModal()" style="margin-top:20px;background:none;border:none;color:#64748b;cursor:pointer;">Close</button>
+    </div>
+</div>
+<!-- SIGNUP MODAL -->
+<div class="signup-modal" id="signupModal">
+    <div class="modal-container">
+        <div class="modal-logo">
+            <img src="logo.png">
+            <span style="font-size:28px; font-weight:900; color:var(--accent);">SHARP SHARP</span>
+        </div>
+        <h2 class="signup-title">Create a Sharp account,<br>and be a Sharp user</h2>
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="signupName" class="input-field" placeholder="Enter your full name">
+            <div class="error-message" id="signupNameError"></div>
+        </div>
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="signupEmail" class="input-field" placeholder="Enter your email">
+            <div class="error-message" id="signupEmailError"></div>
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="signupPassword" class="input-field" placeholder="Create password">
+                <button type="button" class="toggle-password" id="toggleSignupPassword">👁️</button>
+            </div>
+            <div class="error-message" id="signupPasswordError"></div>
+        </div>
+        <div class="input-group">
+            <label>Confirm Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="signupConfirmPassword" class="input-field" placeholder="Confirm password">
+                <button type="button" class="toggle-password" id="toggleSignupConfirmPassword">👁️</button>
+            </div>
+            <div class="error-message" id="signupConfirmError"></div>
+        </div>
+        <div class="input-group">
+            <label>School Reg Number</label>
+            <input type="text" id="signupRegNumber" class="input-field" placeholder="Enter your school reg number">
+            <div class="error-message" id="signupRegError"></div>
+        </div>
+        <button class="signup-btn" onclick="handleSignUp()">Sign up with Email</button>
+        <div style="margin:15px 0; color:#94a3b8; font-size:14px;">OR</div>
+        <button class="google-btn" onclick="signUpWithGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" alt="Google">
+            Sign up with Google
+        </button>
+        <div class="switch-link">
+            Have a Sharp account?
+            <a onclick="switchToLogin()">Login</a>
+        </div>
+        <button onclick="closeSignupModal()" style="margin-top:20px;background:none;border:none;color:#64748b;cursor:pointer;">Close</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+// ==================== SUPABASE CLIENT ====================
+// FIX: was previously split outside a <script> tag — now correctly inside one block
+const { createClient } = supabase;
+const supabaseClient = createClient(
+    'https://peqcddoumxfqovrhwnda.supabase.co',
+    'sb_publishable_6cPUErPy4QZMqKylIc-Gsw_HEO2l4ET'
+);
+
+// ==================== MENU DATA ====================
+const foods = {
+"Cafeteria": [
+    {name:"Rice", variants: [
+        {name:"Fried Rice", price:1300, img:"images/fried-rice.jpg", rating:4.8, time:"22 min"},
+        {name:"Jollof Rice", price:1200, img:"images/jollofrice.jpg", rating:4.9, time:"25 min"},
+        {name:"White Rice & Stew", price:1100, img:"images/white-rice.jpg", rating:4.7, time:"20 min"},
+        {name:"Coconut Rice", price:1400, img:"images/coconut-rice.jpg", rating:4.6, time:"28 min"}
+    ]},
+    {name:"Amala", variants: [
+        {name:"Amala & Ewedu", price:1300, img:"images/amala.jpg", rating:4.9, time:"18 min"},
+        {name:"Amala & Gbegiri", price:1400, img:"images/amala.jpg", rating:4.8, time:"24 min"},
+        {name:"Amala & Ogbono", price:1350, img:"images/amala.jpg", rating:4.5, time:"21 min"},
+        {name:"Amala & Fish", price:1550, img:"images/amala.jpg", rating:4.7, time:"26 min"}
+    ]},
+    {name:"Beans", variants: [
+        {name:"Beans & Plantain", price:900, img:"images/breadandbeans.jpg", rating:4.6, time:"19 min"},
+        {name:"Beans & Bread", price:950, img:"images/breadandbeans.jpg", rating:4.8, time:"17 min"},
+        {name:"Beans & Egg", price:1000, img:"images/breadandbeans.jpg", rating:4.9, time:"15 min"}
+    ]},
+    {name:"Potatoes", variants: [
+        {name:"Boiled Potatoes", price:700, img:"images/potatoe.jpg", rating:4.4, time:"12 min"},
+        {name:"Fried Potatoes", price:850, img:"images/potatoe.jpg", rating:4.7, time:"18 min"},
+        {name:"Potatoes & Egg Sauce", price:950, img:"images/potatoe.jpg", rating:4.6, time:"20 min"}
+    ]},
+    {name:"Semo", variants: [
+        {name:"Semo & Egusi", price:1100, img:"images/semo.jpg", rating:4.8, time:"23 min"},
+        {name:"Semo & Okra", price:1050, img:"images/semo.jpg", rating:4.5, time:"21 min"},
+        {name:"Semo & Vegetable", price:1200, img:"images/semo.jpg", rating:4.9, time:"19 min"}
+    ]}
+],
+"Back of Cafeteria": [
+    {name:"Shawarma", variants: [
+        {name:"Chicken Shawarma", price:1200, img:"images/shawarma2.jpg", rating:4.9, time:"15 min"},
+        {name:"Beef Shawarma", price:1300, img:"images/shawarma.jpg", rating:4.8, time:"17 min"},
+        {name:"Turkey Shawarma", price:1400, img:"images/shawarma.jpg", rating:4.7, time:"18 min"},
+        {name:"Mixed Shawarma", price:1500, img:"images/shawarma2.jpg", rating:4.9, time:"16 min"}
+    ]},
+    {name:"Chicken & Chips", variants: [
+        {name:"Chicken & Chips", price:2000, img:"images/chickenandchips.jpg", rating:4.8, time:"25 min"},
+        {name:"Spicy Chicken & Chips", price:2100, img:"images/chickenandchips.jpg", rating:4.9, time:"26 min"},
+        {name:"Chicken & Chips + Drink", price:2300, img:"images/chickenandchips.jpg", rating:4.7, time:"28 min"}
+    ]},
+    {name:"Chips Only", variants: [
+        {name:"Regular Chips", price:1000, img:"images/potatoechips.jpg", rating:4.5, time:"12 min"},
+        {name:"Spicy Chips", price:1100, img:"images/potatoechips.jpg", rating:4.6, time:"13 min"},
+        {name:"Loaded Chips", price:1300, img:"images/potatoechips.jpg", rating:4.8, time:"15 min"}
+    ]},
+    {name:"Bole", variants: [
+        {name:"Bole & Fish", price:1200, img:"images/bole.jpg", rating:4.9, time:"20 min"},
+        {name:"Bole & Plantain", price:950, img:"images/bole.jpg", rating:4.7, time:"18 min"},
+        {name:"Spicy Bole", price:900, img:"images/bole.jpg", rating:4.6, time:"17 min"}
+    ]},
+    {name:"Suya", variants: [
+        {name:"Beef Suya", price:1500, img:"images/suya11.jpg", rating:4.8, time:"14 min"},
+        {name:"Chicken Suya", price:1600, img:"images/suya2.jpg", rating:4.9, time:"15 min"},
+        {name:"Spicy Suya", price:1550, img:"images/suya11.jpg", rating:4.7, time:"16 min"},
+        {name:"Suya Wrap", price:1700, img:"images/suya11.jpg", rating:4.8, time:"17 min"}
+    ]}
+],
+"Alumni Kitchen": [
+    {name:"Jollof Special", variants: [
+        {name:"Classic Jollof", price:2500, img:"images/jollofrice.jpg", rating:4.9, time:"30 min"},
+        {name:"Spicy Jollof", price:2600, img:"images/jollofrice.jpg", rating:4.8, time:"32 min"},
+        {name:"Jollof + Chicken", price:2800, img:"images/jollofrice.jpg", rating:4.9, time:"35 min"},
+        {name:"Jollof + Turkey", price:2900, img:"images/jollofrice.jpg", rating:4.7, time:"34 min"}
+    ]},
+    {name:"Bread and Egg", variants: [
+        {name:"Bread & Fried Egg", price:2000, img:"images/breadandegg.jpg", rating:4.6, time:"18 min"},
+        {name:"Bread & Scrambled Egg", price:2100, img:"images/breadandegg.jpg", rating:4.8, time:"19 min"},
+        {name:"Bread & Egg Sauce", price:2200, img:"images/breadandegg.jpg", rating:4.7, time:"20 min"}
+    ]},
+    {name:"Barbecue", variants: [
+        {name:"Chicken BBQ", price:3000, img:"images/barbecue.jpg", rating:4.9, time:"40 min"},
+        {name:"Beef BBQ", price:3200, img:"images/barbecue.jpg", rating:4.8, time:"42 min"},
+        {name:"Mixed BBQ", price:3500, img:"images/barbecue.jpg", rating:4.9, time:"45 min"}
+    ]},
+    {name:"Fried Rice Special", variants: [
+        {name:"Fried Rice + Chicken", price:2500, img:"images/fried-rice.jpg", rating:4.8, time:"28 min"},
+        {name:"Fried Rice + Beef", price:2600, img:"images/fried-rice.jpg", rating:4.7, time:"30 min"},
+        {name:"Vegetable Fried Rice", price:2300, img:"images/fried-rice.jpg", rating:4.6, time:"25 min"}
+    ]},
+    {name:"Pasta Delight", variants: [
+        {name:"Creamy Pasta", price:1800, img:"images/pasta.jpg", rating:4.5, time:"22 min"},
+        {name:"Spicy Pasta", price:1900, img:"images/pasta.jpg", rating:4.7, time:"24 min"},
+        {name:"Pasta + Chicken", price:2200, img:"images/pasta.jpg", rating:4.8, time:"26 min"}
+    ]}
+],
+"Shopping Mall": [
+    {name:"Bread", variants: [
+        {name:"White Bread", price:700, img:"images/bread.jpg", rating:4.9, time:"8 min"},
+        {name:"Brown Bread", price:750, img:"images/bread.jpg", rating:4.8, time:"9 min"},
+        {name:"Sweet Bread", price:800, img:"images/bread.jpg", rating:4.7, time:"10 min"}
+    ]},
+    {name:"Milk", variants: [
+        {name:"Peak Milk", price:500, img:"images/milk.jpg", rating:4.9, time:"5 min"},
+        {name:"Three Crowns", price:480, img:"images/milk.jpg", rating:4.6, time:"6 min"},
+        {name:"Chocolate Milk", price:550, img:"images/milk.jpg", rating:4.8, time:"7 min"}
+    ]},
+    {name:"Cornflakes", variants: [
+        {name:"Regular Cornflakes", price:1200, img:"images/cornflakes.jpg", rating:4.7, time:"10 min"},
+        {name:"Honey Cornflakes", price:1300, img:"images/cornflakes.jpg", rating:4.8, time:"11 min"},
+        {name:"Chocolate Cornflakes", price:1350, img:"images/cornflakes.jpg", rating:4.9, time:"12 min"}
+    ]},
+    {name:"Soft Drink", variants: [
+        {name:"Coca Cola", price:400, img:"images/drink.jpg", rating:4.9, time:"3 min"},
+        {name:"Fanta", price:400, img:"images/drink.jpg", rating:4.9, time:"3 min"},
+        {name:"Sprite", price:400, img:"images/drink.jpg", rating:4.9, time:"3 min"},
+        {name:"Pepsi", price:400, img:"images/drink.jpg", rating:4.9, time:"3 min"}
+    ]},
+    {name:"Chocolate", variants: [
+        {name:"Dairy Milk", price:800, img:"images/chocolate.jpg", rating:4.8, time:"8 min"},
+        {name:"Bounty", price:850, img:"images/chocolate.jpg", rating:4.7, time:"9 min"},
+        {name:"Snickers", price:900, img:"images/chocolate.jpg", rating:4.9, time:"10 min"}
+    ]}
+],
+"Bakery": [
+    {name:"Egg Roll", variants: [
+        {name:"Classic Egg Roll", price:1000, img:"images/eggroll.jpg", rating:4.8, time:"12 min"},
+        {name:"Spicy Egg Roll", price:1100, img:"images/eggroll.jpg", rating:4.7, time:"13 min"},
+        {name:"Large Egg Roll", price:1200, img:"images/eggroll.jpg", rating:4.9, time:"15 min"}
+    ]},
+    {name:"Donut", variants: [
+        {name:"Sugar Donut", price:500, img:"images/donuts.jpg", rating:4.6, time:"10 min"},
+        {name:"Glazed Donut", price:550, img:"images/donuts.jpg", rating:4.8, time:"11 min"},
+        {name:"Chocolate Donut", price:600, img:"images/donuts.jpg", rating:4.9, time:"12 min"}
+    ]},
+    {name:"Meat Pie", variants: [
+        {name:"Beef Meat Pie", price:600, img:"images/meatpie.jpg", rating:4.7, time:"14 min"},
+        {name:"Chicken Meat Pie", price:650, img:"images/meatpie.jpg", rating:4.8, time:"15 min"},
+        {name:"Spicy Meat Pie", price:700, img:"images/meatpie.jpg", rating:4.6, time:"16 min"}
+    ]},
+    {name:"Sausage Roll", variants: [
+        {name:"Sausage Roll", price:700, img:"images/hotdog.jpg", rating:4.8, time:"13 min"},
+        {name:"Mini Sausage Roll", price:500, img:"images/hotdog.jpg", rating:4.5, time:"11 min"},
+        {name:"Spicy Sausage Roll", price:750, img:"images/hotdog.jpg", rating:4.7, time:"14 min"}
+    ]},
+    {name:"Puff Puff", variants: [
+        {name:"Plain Puff Puff", price:900, img:"images/puffpuff.jpg", rating:4.9, time:"10 min"},
+        {name:"Sweet Puff Puff", price:950, img:"images/puffpuff.jpg", rating:4.8, time:"11 min"},
+        {name:"Spicy Puff Puff", price:1000, img:"images/puffpuff.jpg", rating:4.6, time:"12 min"}
+    ]}
+]
+};
+
+let cart = JSON.parse(localStorage.getItem("sharpCart")) || {};
+let currentUser = null;
+
+// ==================== INACTIVITY AUTO-LOGOUT ====================
+const INACTIVITY_TIMEOUT = 3600000;
+let inactivityTimer;
+
+function updateLastActivity() {
+    localStorage.setItem("lastActivity", Date.now());
+}
+
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    if (currentUser) {
+        inactivityTimer = setTimeout(() => logoutUser(false), INACTIVITY_TIMEOUT);
+    }
+}
+
+async function logoutUser(isManual = true) {
+    await supabaseClient.auth.signOut();
+    localStorage.removeItem("sharpUserName");
+    localStorage.removeItem("sharpUserEmail");
+    localStorage.removeItem("lastActivity");
+    currentUser = null;
+
+    const headerRight = document.getElementById("headerRight");
+    headerRight.innerHTML = `
+        <button class="cart-header-btn" onclick="toggleCart()">
+            🛒
+            <span id="headerCartCount" class="cart-badge"></span>
+        </button>
+        <button class="header-btn" id="signInBtn">Sign In</button>
+        <button class="contact-btn" id="signUpBtn">Sign Up Free</button>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    `;
+
+    document.getElementById("signInBtn").addEventListener("click", () => loginModal.style.display = "flex");
+    document.getElementById("signUpBtn").addEventListener("click", () => signupModal.style.display = "flex");
+
+    // FIX: was referencing undeclared newThemeToggle — now correctly declared after innerHTML is set
+    const newThemeToggle = document.getElementById("themeToggle");
+    newThemeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    if (isManual) {
+        alert("You have successfully logged out");
+    } else {
+        alert("👋 You have been automatically logged out due to inactivity.\nPlease sign in again to continue.");
+    }
+
+    renderCart();
+}
+
+function toggleProfileDropdown() {
+    const menu = document.getElementById("profileDropdownMenu");
+    if (menu) menu.classList.toggle("open");
+}
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".profile-dropdown")) {
+        const menu = document.getElementById("profileDropdownMenu");
+        if (menu) menu.classList.remove("open");
+    }
+});
+
+async function showOrderHistory() {
+    toggleProfileDropdown();
+
+    let modal = document.getElementById("orderHistoryModal");
+    if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "orderHistoryModal";
+        modal.style.cssText = `
+            position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+            z-index: 4000; display: flex; align-items: center; justify-content: center;
+        `;
+        modal.innerHTML = `
+            <div style="background: var(--card-bg); width: 480px; max-height: 80vh; border-radius: 20px;
+                        padding: 32px 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow-y: auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                    <h2 style="font-family:'Playfair Display',serif; font-size:22px;">📦 Order History</h2>
+                    <button onclick="document.getElementById('orderHistoryModal').remove()"
+                            style="background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">✕</button>
+                </div>
+                <div id="orderHistoryContent">
+                    <div style="text-align:center; padding:40px; color:#94a3b8;">
+                        <div style="font-size:36px; margin-bottom:12px;">⏳</div>
+                        <p>Loading your orders...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    } else {
+        modal.style.display = "flex";
+    }
+
+    const email = localStorage.getItem("sharpUserEmail");
+    try {
+        const res = await fetch("https://sharp-sharp-backend.onrender.com/api/orders");
+        const data = await res.json();
+
+        const myOrders = data.orders.filter(o => o.customer_email === email && (o.status === "pending" || o.status === "delivered"));
+        const content = document.getElementById("orderHistoryContent");
+
+        if (myOrders.length === 0) {
+            content.innerHTML = `
+                <div style="text-align:center; padding:40px; color:#94a3b8;">
+                    <div style="font-size:56px; margin-bottom:16px;">🍽️</div>
+                    <p style="font-size:16px;">No orders yet!</p>
+                    <p style="font-size:14px; margin-top:8px;">Start ordering some delicious food 😋</p>
+                </div>
+            `;
+            return;
+        }
+
+        content.innerHTML = myOrders.map(order => {
+            const date = new Date(order.created_at);
+            const dateStr = date.toLocaleDateString('en-NG', { day:'numeric', month:'short', year:'numeric' });
+            const timeStr = date.toLocaleTimeString('en-NG', { hour:'2-digit', minute:'2-digit' });
+            const items = Array.isArray(order.items)
+                ? order.items.map(i => `${i.name}${i.qty > 1 ? ' ×'+i.qty : ''}`).join(', ')
+                : '';
+            const statusColor = {
+                pending: '#f59e0b',
+                preparing: '#3b82f6',
+                ready: '#16a34a',
+                delivered: '#64748b'
+            }[order.status] || '#64748b';
+
+            return `
+                <div style="border: 1px solid rgba(22,163,74,0.15); border-radius: 14px; padding: 16px; margin-bottom: 14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:13px; color:#94a3b8;">${dateStr} • ${timeStr}</span>
+                        <span style="background:${statusColor}22; color:${statusColor}; padding:4px 12px;
+                                     border-radius:50px; font-size:12px; font-weight:600;">${order.status}</span>
+                    </div>
+                    <p style="font-size:14px; color:var(--text-color); margin-bottom:8px;">${items}</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:13px; color:#94a3b8;">Ref: ${order.payment_ref || '—'}</span>
+                        <span style="font-weight:700; color:#16a34a; font-size:16px;">₦${(order.total || 0).toLocaleString()}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (err) {
+        document.getElementById("orderHistoryContent").innerHTML = `
+            <div style="text-align:center; padding:40px; color:#94a3b8;">
+                <p>Could not load orders. Check your connection.</p>
+            </div>
+        `;
+    }
+}
+
+function showProfile() {
+    if (!currentUser) return;
+    const email = localStorage.getItem("sharpUserEmail") || "";
+    document.getElementById("profileName").textContent = currentUser;
+    document.getElementById("profileEmail").textContent = email;
+    document.getElementById("profileModal").style.display = "flex";
+}
+
+function closeProfileModal() {
+    document.getElementById("profileModal").style.display = "none";
+}
+
+function handleLogout() {
+    if (confirm("Are you sure you want to log out?")) {
+        logoutUser(true);
+    }
+}
+
+// ==================== MENU BUILD ====================
+const container = document.getElementById("menuContainer");
+
+function safeId(name) {
+    return name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+}
+
+const skeletonHTML = Array(4).fill(`
+    <div class="skeleton-card">
+        <div class="skeleton skeleton-img"></div>
+        <div class="skeleton-body">
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-price"></div>
+            <div class="skeleton skeleton-btn"></div>
+        </div>
+    </div>
+`).join('');
+
+const tempSection = document.createElement("div");
+tempSection.className = "section revealed"; // pre-reveal skeleton
+tempSection.innerHTML = `<div class="scroll">${skeletonHTML}</div>`;
+container.appendChild(tempSection);
+
+// FIX: define revealObserver before setTimeout so it exists when menu is built
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+setTimeout(() => {
+    container.innerHTML = "";
+    for (let section in foods) {
+        let sectionDiv = document.createElement("div");
+        sectionDiv.className = "section";
+        sectionDiv.id = "section-" + safeId(section);
+
+        let title = document.createElement("h2");
+        title.innerText = section;
+
+        let scroll = document.createElement("div");
+        scroll.className = "scroll";
+
+        foods[section].forEach(item => {
+            let baseName = item.name;
+            let variants = item.variants;
+            let id = safeId(baseName);
+            let card = document.createElement("div");
+            card.className = "card variant-card";
+            let slidesHTML = '';
+            variants.forEach((v, index) => {
+                slidesHTML += `
+                    <div class="variant-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                        <img src="${v.img}" alt="${v.name}">
+                        <div class="card-meta">
+                            <span>${v.rating} ★</span>
+                            <span>${v.time}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            card.innerHTML = `
+                <div class="variant-slideshow" id="variant-slideshow-${id}">
+                    ${slidesHTML}
+                </div>
+                <button class="variant-nav variant-prev" onclick="changeVariantSlide('${id}', -1)">‹</button>
+                <button class="variant-nav variant-next" onclick="changeVariantSlide('${id}', 1)">›</button>
+                <div class="card-body">
+                    <h4 id="variant-name-${id}">${variants[0].name}</h4>
+                    <p class="price" id="variant-price-${id}">₦${variants[0].price}</p>
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="updateVariantItem('${id}', -1)">−</button>
+                        <span id="qty-${id}">0</span>
+                        <button class="qty-btn" onclick="updateVariantItem('${id}', 1)">+</button>
+                    </div>
+                </div>
+            `;
+            card.autoInterval = null;
+            const startAuto = () => {
+                if (card.autoInterval) clearInterval(card.autoInterval);
+                card.autoInterval = setInterval(() => changeVariantSlide(id, 1), 4800);
+            };
+            const stopAuto = () => {
+                if (card.autoInterval) {
+                    clearInterval(card.autoInterval);
+                    card.autoInterval = null;
+                }
+            };
+            card.addEventListener('mouseenter', startAuto);
+            card.addEventListener('mouseleave', stopAuto);
+            card.addEventListener('click', function(e) {
+                if (e.target.closest('.variant-nav') || e.target.closest('.qty-btn') || e.target.closest('.qty-control')) return;
+                changeVariantSlide(id, 1);
+            });
+            scroll.appendChild(card);
+        });
+
+        sectionDiv.appendChild(title);
+        sectionDiv.appendChild(scroll);
+        container.appendChild(sectionDiv);
+    }
+
+    // FIX: revealObserver is now properly defined above — this no longer crashes
+    document.querySelectorAll('.section').forEach(section => {
+        revealObserver.observe(section);
+    });
+}, 1500);
+
+// ==================== VARIANT FUNCTIONS ====================
+function changeVariantSlide(cardId, direction) {
+    const slideshow = document.getElementById(`variant-slideshow-${cardId}`);
+    if (!slideshow) return;
+    const slides = slideshow.querySelectorAll('.variant-slide');
+    let currentIndex = Array.from(slides).findIndex(slide => slide.classList.contains('active'));
+    slides[currentIndex].classList.remove('active');
+    let newIndex = (currentIndex + direction + slides.length) % slides.length;
+    slides[newIndex].classList.add('active');
+    const nameEl = document.getElementById(`variant-name-${cardId}`);
+    const priceEl = document.getElementById(`variant-price-${cardId}`);
+    let foundVariant = null;
+    for (let sec in foods) {
+        for (let item of foods[sec]) {
+            if (item.variants && safeId(item.name) === cardId) {
+                foundVariant = item.variants[newIndex];
+                break;
+            }
+        }
+        if (foundVariant) break;
+    }
+    if (foundVariant && nameEl && priceEl) {
+        nameEl.textContent = foundVariant.name;
+        priceEl.textContent = `₦${foundVariant.price}`;
+    }
+    const qtyEl = document.getElementById(`qty-${cardId}`);
+    if (qtyEl && foundVariant) {
+        qtyEl.innerText = cart[foundVariant.name] || 0;
+    }
+}
+
+function updateVariantItem(cardId, change) {
+    let baseItem = null;
+    for (let sec in foods) {
+        for (let item of foods[sec]) {
+            if (item.variants && safeId(item.name) === cardId) {
+                baseItem = item;
+                break;
+            }
+        }
+        if (baseItem) break;
+    }
+    if (!baseItem) return;
+    const slideshow = document.getElementById(`variant-slideshow-${cardId}`);
+    const activeSlide = slideshow ? slideshow.querySelector('.variant-slide.active') : null;
+    const currentIndex = activeSlide ? parseInt(activeSlide.dataset.index) : 0;
+    const currentVariant = baseItem.variants[currentIndex];
+    if (!currentVariant) return;
+    const itemName = currentVariant.name;
+    if (!cart[itemName]) cart[itemName] = 0;
+    cart[itemName] += change;
+    if (cart[itemName] < 0) cart[itemName] = 0;
+    const qtyEl = document.getElementById(`qty-${cardId}`);
+    if (qtyEl) qtyEl.innerText = cart[itemName];
+    renderCart();
+    saveCart();
+    showToast(`${itemName} × ${cart[itemName]} in cart`);
+}
+
+// ==================== SPECIAL CAROUSEL ====================
+const specialItems = [
+    ["Shawarma", 1200, "images/shawarma2.jpg", 4.9, "15 min"],
+    ["Jollof Special", 2500, "images/jollofrice.jpg", 4.8, "30 min"],
+    ["Chicken & Chips", 2000, "images/chickenandchips.jpg", 4.9, "25 min"],
+    ["Suya", 1500, "images/suya11.jpg", 4.7, "14 min"],
+    ["Barbecue", 3000, "images/barbecue.jpg", 4.9, "40 min"],
+    ["Egg Roll", 1000, "images/eggroll.jpg", 4.8, "12 min"],
+    ["Amala", 1200, "images/amala.jpg", 4.9, "18 min"],
+    ["Potatoes", 700, "images/potatoe.jpg", 4.6, "12 min"],
+    ["Bread and Egg", 2000, "images/breadandegg.jpg", 4.8, "18 min"],
+    ["Puff Puff", 900, "images/puffpuff.jpg", 4.7, "10 min"],
+    ["Meat Pie", 600, "images/meatpie.jpg", 4.9, "14 min"],
+    ["Donut", 500, "images/donuts.jpg", 4.8, "11 min"]
+];
+
+const carouselTrack = document.getElementById("specialCarousel");
+let currentSlide = 0;
+
+function createStackSlides() {
+    carouselTrack.innerHTML = "";
+    specialItems.forEach((item, index) => {
+        let [name, price, img, rating, time] = item;
+        let id = safeId(name);
+        const card = document.createElement("div");
+        card.className = "carousel-card";
+        if (index === 0) card.classList.add("active");
+        card.innerHTML = `
+            <img src="${img}" alt="${name}">
+            <div class="carousel-card-body">
+                <h4>${name}</h4>
+                <div class="carousel-meta">
+                    <span>${rating} ★</span>
+                    <span>${time}</span>
+                </div>
+                <p class="carousel-price">₦${price}</p>
+                <div class="carousel-qty">
+                    <button class="carousel-qty-btn" onclick="addSpecialItem('${name}',${price},-1)">−</button>
+                    <span id="qty-special-${id}">0</span>
+                    <button class="carousel-qty-btn" onclick="addSpecialItem('${name}',${price},1)">+</button>
+                </div>
+            </div>
+        `;
+        carouselTrack.appendChild(card);
+    });
+}
+
+function updateStack() {
+    const cards = document.querySelectorAll(".carousel-card");
+    cards.forEach((card, index) => {
+        card.classList.remove("active", "prev", "next");
+        if (index === currentSlide) card.classList.add("active");
+        else if (index === (currentSlide - 1 + cards.length) % cards.length) card.classList.add("prev");
+        else if (index === (currentSlide + 1) % cards.length) card.classList.add("next");
+    });
+}
+
+function nextSlide() { currentSlide = (currentSlide + 1) % specialItems.length; updateStack(); }
+function prevSlide() { currentSlide = (currentSlide - 1 + specialItems.length) % specialItems.length; updateStack(); }
+
+function addSpecialItem(name, price, change) {
+    if (!cart[name]) cart[name] = 0;
+    cart[name] += change;
+    if (cart[name] < 0) cart[name] = 0;
+    const id = safeId(name);
+    const qtySpan = document.getElementById(`qty-special-${id}`);
+    if (qtySpan) qtySpan.textContent = cart[name];
+    renderCart();
+    saveCart();
+    showToast(`${name} × ${cart[name]} in cart`);
+}
+
+// ==================== CART FUNCTIONS ====================
+function changeCartQty(name, change) {
+    if (!cart[name]) return;
+    cart[name] += change;
+    if (cart[name] <= 0) delete cart[name];
+    renderCart();
+    saveCart();
+}
+
+function removeFromCart(name) {
+    delete cart[name];
+    renderCart();
+    saveCart();
+}
+
+function renderCart() {
+    let itemsHTML = "", subtotal = 0, count = 0;
+    for (let item in cart) {
+        if (cart[item] > 0) {
+            let price = getPrice(item);
+            let t = cart[item] * price;
+            subtotal += t;
+            count += cart[item];
+            itemsHTML += `
+            <div class="cart-item">
+                <div class="cart-item-info">
+                    <span class="cart-item-name">${item}</span>
+                    <div class="cart-item-qty-controls">
+                        <button onclick="changeCartQty('${item}', -1)" class="qty-btn-small">−</button>
+                        <span style="font-weight:600; min-width:24px; text-align:center;">${cart[item]}</span>
+                        <button onclick="changeCartQty('${item}', 1)" class="qty-btn-small">+</button>
+                    </div>
+                </div>
+                <div class="cart-item-price">₦${t}</div>
+                <button onclick="removeFromCart('${item}')" class="cart-remove">×</button>
+            </div>`;
+        }
+    }
+    let grandTotal = subtotal;
+    document.getElementById("cartItems").innerHTML = itemsHTML || `
+        <div style="padding:40px 20px; text-align:center;">
+            <div style="font-size:72px; margin-bottom:16px; animation: bounceEmpty 1.5s infinite;">🛒</div>
+            <p style="font-size:18px; font-weight:700; color:var(--text-color); margin-bottom:8px;">Your cart is empty!</p>
+            <p style="font-size:14px; color:#94a3b8;">Looks like you haven't added anything yet.<br>Go ahead and treat yourself! 😋</p>
+        </div>`;
+    document.getElementById("subtotalPrice").innerText = `₦${subtotal}`;
+    document.getElementById("grandTotal").innerText = `₦${grandTotal}`;
+    document.getElementById("checkoutTotal").innerText = grandTotal;
+    document.getElementById("cartItemCountHeader").innerText = `(${count})`;
+
+    const cartCountEl = document.getElementById("cartCount");
+    // FIX: cart badge now hides when empty (badge uses :empty CSS + empty string when 0)
+    const headerCartCountEl = document.getElementById("headerCartCount");
+    if (cartCountEl) cartCountEl.innerText = count;
+    if (headerCartCountEl) headerCartCountEl.innerText = count > 0 ? count : "";
+
+    const estEl = document.getElementById("estTime");
+    if (estEl) estEl.innerText = count > 0 ? "28 minutes" : "—";
+}
+
+function saveCart() {
+    localStorage.setItem("sharpCart", JSON.stringify(cart));
+}
+
+function getPrice(name) {
+    for (let sec in foods) {
+        for (let item of foods[sec]) {
+            if (item.variants) {
+                for (let v of item.variants) {
+                    if (v.name === name) return v.price;
+                }
+            }
+        }
+    }
+    for (let item of specialItems) {
+        if (item[0] === name) return item[1];
+    }
+    return 0;
+}
+
+function toggleCart() {
+    const panel = document.getElementById("cartPanel");
+    panel.classList.toggle("active");
+}
+
+function proceedToCheckout() {
+    if (!currentUser) {
+        alert("Please sign in to proceed to checkout");
+        document.getElementById("loginModal").style.display = "flex";
+        toggleCart();
+        return;
+    }
+    let email = localStorage.getItem("sharpUserEmail") || currentUser.toLowerCase() + "@omu.edu.ng";
+    let total = parseInt(document.getElementById("grandTotal").innerText.replace("₦", ""));
+    if (total <= 0) return alert("Cart is empty");
+    let handler = PaystackPop.setup({
+        key: "pk_test_6c630613756eb14a1662c5305d2d8fd23c140400",
+        email: email,
+        amount: total * 100,
+        currency: "NGN",
+        callback: (response) => {
+            let items = [];
+            for (let name in cart) {
+                if (cart[name] > 0) {
+                    items.push({ name: name, qty: cart[name], price: getPrice(name) });
+                }
+            }
+            try {
+                fetch("https://sharp-sharp-backend.onrender.com/api/create-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        customerName: currentUser || "Guest",
+                        customerEmail: email,
+                        items: items,
+                        total: total,
+                        paymentRef: response.reference
+                    })
+                });
+            } catch (err) {
+                console.error("Order save failed:", err);
+            }
+            showSuccess(response.reference);
+            cart = {};
+            saveCart();
+            renderCart();
+            toggleCart();
+        },
+        onClose: () => showToast("Payment cancelled")
+    });
+    handler.openIframe();
+}
+
+function showSuccess(ref) {
+    document.getElementById("orderRef").innerText = "Reference: " + ref;
+    document.getElementById("successPage").style.display = "flex";
+    launchConfetti();
+    startOrderTracker(ref);
+}
+
+// ── ORDER TRACKER ENGINE ──────────────────────────────────────────────────────
+const STAGES_CONFIG = [
+    { key: "pending",    icon: "📋", label: "Order placed",    desc: "We received your order!" },
+    { key: "preparing",  icon: "👨‍🍳", label: "Preparing",       desc: "The kitchen is cooking your food" },
+    { key: "picked_up",  icon: "🛵", label: "Rider picked up",  desc: "Your rider has your order" },
+    { key: "on_the_way", icon: "🚀", label: "On the way",       desc: "Heading to your location now" },
+    { key: "delivered",  icon: "✅", label: "Delivered",        desc: "Enjoy your meal! 🎉" },
+];
+
+let trackerInterval = null;
+let trackerRef = null;
+
+function startOrderTracker(ref) {
+    trackerRef = ref;
+    document.getElementById("trackerRef").textContent = "Ref: " + ref.slice(-8).toUpperCase();
+    buildTrackerStages("pending");
+    document.getElementById("orderTracker").classList.add("visible");
+    pollOrderStatus();
+    if (trackerInterval) clearInterval(trackerInterval);
+    trackerInterval = setInterval(pollOrderStatus, 10000);
+}
+
+async function pollOrderStatus() {
+    if (!trackerRef) return;
+    try {
+        const res = await fetch(`https://sharp-sharp-backend.onrender.com/api/orders/ref/${trackerRef}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        buildTrackerStages(data.order.status);
+        if (data.order.status === "delivered") {
+            clearInterval(trackerInterval);
+            trackerInterval = null;
+        }
+    } catch (err) {
+        console.warn("Tracker poll failed:", err);
+    }
+}
+
+function buildTrackerStages(currentStatus) {
+    const currentIdx = STAGES_CONFIG.findIndex(s => s.key === currentStatus);
+    const container = document.getElementById("trackerStages");
+    container.innerHTML = STAGES_CONFIG.map((stage, i) => {
+        const isDone   = i < currentIdx;
+        const isActive = i === currentIdx;
+        const cls  = isDone ? "done" : isActive ? "active" : "";
+        const icon = isDone ? "✓" : stage.icon;
+        return `
+            <div class="tracker-stage ${cls}">
+                <div class="stage-icon">${icon}</div>
+                <div class="stage-content">
+                    <div class="stage-label">${stage.label}</div>
+                    <div class="stage-desc">${stage.desc}</div>
+                </div>
+            </div>`;
+    }).join("");
+}
+
+function hideTracker() {
+    document.getElementById("orderTracker").classList.remove("visible");
+}
+
+function launchConfetti() {
+    const colors = ["#16a34a", "#22c55e", "#f59e0b", "#ef4444", "#3b82f6", "#a855f7"];
+    for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+            const piece = document.createElement("div");
+            piece.className = "confetti-piece";
+            piece.style.left = Math.random() * 100 + "vw";
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.width = (Math.random() * 10 + 6) + "px";
+            piece.style.height = (Math.random() * 10 + 6) + "px";
+            piece.style.animationDuration = (Math.random() * 2 + 2) + "s";
+            piece.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+            document.body.appendChild(piece);
+            setTimeout(() => piece.remove(), 4000);
+        }, i * 40);
+    }
+}
+
+function closeSuccess() {
+    document.getElementById("successPage").style.display = "none";
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    document.getElementById("toastText").innerHTML = message;
+    toast.style.display = "flex";
+    setTimeout(() => toast.style.display = "none", 2800);
+}
+
+// ==================== THEME ====================
+const themeToggle = document.getElementById("themeToggle");
+
+function setTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+    const icon = theme === "dark" ? "☀️" : "🌙";
+    document.querySelectorAll("#themeToggle").forEach(btn => btn.textContent = icon);
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem("theme");
+    if (saved) setTheme(saved);
+    else setTheme(window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+}
+
+themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    setTheme(current === "dark" ? "light" : "dark");
+});
+loadTheme();
+
+// ==================== USER & PROFILE ====================
+const loginModal = document.getElementById("loginModal");
+const signupModal = document.getElementById("signupModal");
+const profileModal = document.getElementById("profileModal");
+
+function updateHeaderForUser(firstName) {
+    currentUser = firstName;
+    const headerRight = document.getElementById("headerRight");
+    headerRight.innerHTML = `
+        <button class="cart-header-btn" onclick="toggleCart()">
+            🛒
+            <span id="headerCartCount" class="cart-badge"></span>
+        </button>
+        <div class="profile-dropdown">
+            <div class="user-profile" onclick="toggleProfileDropdown()">
+                <div class="user-profile-icon">👤</div>
+                <span style="font-weight:600;">Hi, ${firstName}</span>
+            </div>
+            <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                <div class="dropdown-header">
+                    <strong>${firstName}</strong>
+                    <small>${localStorage.getItem("sharpUserEmail") || ""}</small>
+                </div>
+                <button class="dropdown-item" onclick="showProfile(); toggleProfileDropdown()">
+                    👤 Profile
+                </button>
+                <button class="dropdown-item" onclick="showOrderHistory(); toggleProfileDropdown()">
+                    📦 Order History
+                </button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item danger" onclick="handleLogout(); toggleProfileDropdown()">
+                    🚪 Logout
+                </button>
+            </div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+    `;
+
+    // FIX: newThemeToggle now correctly declared after innerHTML is set
+    const newThemeToggle = document.getElementById("themeToggle");
+    newThemeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    updateLastActivity();
+    renderCart();
+}
+
+// FIX: loadSavedUser is now async so it can properly await logoutUser
+async function loadSavedUser() {
+    const saved = localStorage.getItem("sharpUserName");
+    const lastActivity = parseInt(localStorage.getItem("lastActivity") || "0");
+    if (saved) {
+        if (Date.now() - lastActivity > INACTIVITY_TIMEOUT) {
+            await logoutUser(false);
+        } else {
+            updateHeaderForUser(saved);
+            resetInactivityTimer();
+        }
+    }
+}
+
+document.getElementById("signInBtn").addEventListener("click", () => loginModal.style.display = "flex");
+document.getElementById("signUpBtn").addEventListener("click", () => signupModal.style.display = "flex");
+
+function closeLoginModal() { loginModal.style.display = "none"; clearErrors(); }
+function closeSignupModal() { signupModal.style.display = "none"; clearErrors(); }
+function switchToSignup() { closeLoginModal(); signupModal.style.display = "flex"; }
+function switchToLogin() { closeSignupModal(); loginModal.style.display = "flex"; }
+
+function setupPasswordToggle(inputId, buttonId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(buttonId);
+    btn.addEventListener("mousedown", () => input.type = "text");
+    btn.addEventListener("mouseup", () => input.type = "password");
+    btn.addEventListener("mouseleave", () => input.type = "password");
+}
+setupPasswordToggle("loginPassword", "toggleLoginPassword");
+setupPasswordToggle("signupPassword", "toggleSignupPassword");
+setupPasswordToggle("signupConfirmPassword", "toggleSignupConfirmPassword");
+
+function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.style.display = "block";
+    const field = document.getElementById(id.replace("Error",""));
+    if (field) field.classList.add("error");
+}
+
+function clearErrors() {
+    document.querySelectorAll('.error-message').forEach(el => { el.style.display = 'none'; el.textContent = ''; });
+    document.querySelectorAll('.input-field').forEach(el => el.classList.remove("error"));
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function handleSignIn() {
+    clearErrors();
+    const email = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+    if (!email) return showError("loginUsernameError", "Email is required");
+    if (password.length < 6) return showError("loginPasswordError", "Password must be at least 6 characters");
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+    if (error) return showError("loginPasswordError", error.message);
+
+    const firstName = data.user.user_metadata?.full_name?.split(" ")[0] || email.split("@")[0];
+    localStorage.setItem("sharpUserName", firstName);
+    localStorage.setItem("sharpUserEmail", email);
+    updateHeaderForUser(firstName);
+    updateLastActivity();
+    closeLoginModal();
+    resetInactivityTimer();
+}
+
+async function handleSignUp() {
+    clearErrors();
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
+    const confirm = document.getElementById("signupConfirmPassword").value.trim();
+    // FIX: regNumber was used but never extracted — now correctly read from the input field
+    const regNumber = document.getElementById("signupRegNumber").value.trim();
+
+    if (!name) return showError("signupNameError", "Full name is required");
+    if (!email || !isValidEmail(email)) return showError("signupEmailError", "Please enter a valid email");
+    if (password.length < 6) return showError("signupPasswordError", "Password must be at least 6 characters");
+    if (password !== confirm) return showError("signupConfirmError", "Passwords do not match");
+    if (!regNumber) return showError("signupRegError", "Registration number is required");
+
+    const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+            data: { full_name: name, reg_number: regNumber }
+        }
+    });
+
+    if (error) return showError("signupEmailError", error.message);
+
+    await supabaseClient.from('profiles').insert({
+        id: data.user.id,
+        full_name: name,
+        reg_number: regNumber,
+        email: email
+    });
+
+    const firstName = name.split(" ")[0];
+    alert(`🎉 Account created!\nWelcome to Sharp Sharp, ${firstName}!`);
+    localStorage.setItem("sharpUserName", firstName);
+    localStorage.setItem("sharpUserEmail", email);
+    updateHeaderForUser(firstName);
+    updateLastActivity();
+    closeSignupModal();
+    resetInactivityTimer();
+}
+
+async function signInWithGoogle() {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href }
+    });
+    if (error) alert("Google sign in failed: " + error.message);
+    closeLoginModal();
+}
+
+async function signUpWithGoogle() {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href }
+    });
+    if (error) alert("Google sign up failed: " + error.message);
+    closeSignupModal();
+}
+
+// Activity listeners
+document.addEventListener('mousemove', resetInactivityTimer);
+document.addEventListener('keydown', resetInactivityTimer);
+document.addEventListener('scroll', resetInactivityTimer);
+document.addEventListener('click', resetInactivityTimer);
+document.addEventListener('touchstart', resetInactivityTimer);
+
+// Search functionality
+const searchInput = document.getElementById("searchInput");
+const suggestionsBox = document.getElementById("suggestions");
+let allFoodNames = [];
+for (let section in foods) {
+    foods[section].forEach(item => {
+        item.variants.forEach(v => allFoodNames.push(v.name));
+    });
+}
+
+searchInput.addEventListener("input", function () {
+    const value = this.value.toLowerCase().trim();
+    suggestionsBox.innerHTML = "";
+    if (value === "") {
+        suggestionsBox.style.display = "none";
+        resetSearch();
+        return;
+    }
+    const matches = allFoodNames.filter(name => name.toLowerCase().includes(value));
+    if (matches.length === 0) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+    matches.forEach(name => {
+        const div = document.createElement("div");
+        div.textContent = name;
+        div.onclick = () => {
+            searchInput.value = name;
+            suggestionsBox.style.display = "none";
+            performSearch();
+        };
+        suggestionsBox.appendChild(div);
+    });
+    suggestionsBox.style.display = "block";
+});
+
+function resetSearch() {
+    document.querySelectorAll(".card").forEach(card => card.style.display = "block");
+}
+
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".search-wrapper")) suggestionsBox.style.display = "none";
+});
+
+function performSearch() {
+    const value = searchInput.value.toLowerCase().trim();
+    suggestionsBox.style.display = "none";
+    if (value === "") { resetSearch(); return; }
+    let firstMatch = null;
+    document.querySelectorAll(".card").forEach(card => {
+        const nameEl = card.querySelector("h4");
+        if (!nameEl) return;
+        const name = nameEl.innerText.toLowerCase().trim();
+        const match = name.includes(value);
+        card.style.display = match ? "block" : "none";
+        if (match && !firstMatch) firstMatch = card;
+    });
+    if (firstMatch) firstMatch.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+searchInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") performSearch();
+});
+
+// Build category tabs
+const tabsContainer = document.getElementById("categoryTabs");
+Object.keys(foods).forEach((section, index) => {
+    const tab = document.createElement("button");
+    tab.className = "category-tab" + (index === 0 ? " active" : "");
+    tab.textContent = section;
+    tab.onclick = () => {
+        document.querySelectorAll(".category-tab").forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        const sectionEl = document.getElementById("section-" + safeId(section));
+        if (sectionEl) sectionEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    tabsContainer.appendChild(tab);
+});
+
+createStackSlides();
+updateStack();
+loadSavedUser();
+renderCart();
+
+window.addEventListener('load', () => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+});
+</script>
+</body>
+</html>

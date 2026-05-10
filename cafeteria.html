@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sharp Sharp</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+background:#f8fafc;
+font-family:'Poppins', sans-serif;
+}
+
+/* HERO */
+.hero{
+position:relative;
+height:400px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+/* VIDEO */
+.bg-video{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* OVERLAY */
+.overlay{
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+}
+
+/* BRAND BOX */
+.brand-box{
+position:relative;
+background:rgba(255,255,255,0.95);
+padding:20px 35px;
+border-radius:60px;
+display:flex;
+align-items:center;
+gap:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.brand-box img{
+width:60px;
+}
+
+/* TEXT */
+.brand{
+font-family:'Playfair Display', serif;
+font-size:32px;
+font-weight:900;
+letter-spacing:2px;
+}
+
+.sharp1{color:#ff7a00;}
+.sharp2{color:#16a34a;}
+
+/* SECTIONS */
+.section{
+padding:25px;
+}
+
+.section h2{
+margin-bottom:12px;
+font-family:'Playfair Display', serif;
+}
+
+/* SCROLL */
+.scroll{
+display:flex;
+gap:15px;
+overflow-x:auto;
+}
+
+/* CARD */
+.card{
+min-width:170px;
+background:white;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.card img{
+width:100%;
+height:120px;
+object-fit:cover;
+}
+
+.card-body{
+padding:10px;
+}
+
+.price{
+color:#16a34a;
+font-weight:600;
+}
+
+.qty-control{
+display:flex;
+justify-content:space-between;
+margin-top:8px;
+}
+
+.qty-btn{
+background:#ff7a00;
+border:none;
+color:white;
+width:28px;
+height:28px;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* CART */
+.cart-float{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#16a34a;
+color:white;
+padding:14px 18px;
+border-radius:50px;
+cursor:pointer;
+font-weight:600;
+z-index:1000;
+}
+
+.cart-panel{
+position:fixed;
+bottom:80px;
+right:20px;
+width:300px;
+background:white;
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+border-radius:12px;
+padding:15px;
+display:none;
+}
+
+.cart-panel.active{
+display:block;
+}
+
+.checkout{
+background:#ff7a00;
+color:white;
+border:none;
+padding:12px;
+width:100%;
+border-radius:6px;
+margin-top:10px;
+cursor:pointer;
+}
+
+/* FOOTER */
+.footer{
+background:#f1f5f9;
+padding:40px 20px;
+margin-top:40px;
+}
+
+.footer-container{
+max-width:1100px;
+margin:auto;
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+}
+
+.footer-logo img{
+width:100px;
+}
+
+.footer-links{
+display:flex;
+gap:30px;
+}
+
+.footer hr{
+margin:20px 0;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+
+<video autoplay muted loop playsinline class="bg-video">
+<source src="food-video.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<div class="brand-box">
+<img src="logo.png">
+<h1 class="brand">
+<span class="sharp1">SHARP</span>
+<span class="sharp2">SHARP</span>
+</h1>
+</div>
+
+</div>
+
+<!-- CART -->
+<div class="cart-float" onclick="toggleCart()">
+🛒 <span id="cartCount">0</span>
+</div>
+
+<div id="cartPanel" class="cart-panel">
+<h3>Your Cart</h3>
+<div id="cartItems"></div>
+<p><b>Total: ₦<span id="totalPrice">0</span></b></p>
+<button class="checkout">Checkout</button>
+</div>
+
+<!-- MENU -->
+<div id="menuContainer"></div>
+
+<!-- FOOTER -->
+<footer class="footer">
+
+<div class="footer-container">
+
+<div class="footer-logo">
+<img src="logo.png">
+<p>Right at your hall door 🚀</p>
+</div>
+
+<div class="footer-links">
+<div>
+<h4>Follow Us</h4>
+<p>Instagram</p>
+</div>
+
+<div>
+<h4>Support</h4>
+<p>FAQ</p>
+<p>Contact Us</p>
+</div>
+
+<div>
+<h4>Company</h4>
+<p>About Us</p>
+</div>
+</div>
+
+</div>
+
+<hr>
+<p style="text-align:center;">© 2026 Sharp Sharp</p>
+
+</footer>
+
+<script>
+const foods = {
+"Cafeteria":[["Jollof rice and chicken",3500],["Beans and bread",2500],["Amala",3300],["Potatoes",2200],["Semo",2000]],
+"Back of Cafeteria":[["Plantain & Egg",1500],["Chicken & Chips",1800],["Chips Only",800],["Bole",1200],["Suya",800]],
+"Alumni Kitchen":[["Jollof Special",4500],["Bread and egg",2700],["Pepper Soup",2000],["Spaghetti",1800],["Turkey Meal",3000]],
+"Shopping Mall":[["Bread",700],["Milk",500],["Cornflakes",1200],["Soft Drink",400],["Chocolate",800]],
+"Bakery":[["Cake Slice",1000],["Donut",500],["Meat Pie",600],["Cupcake",700],["Croissant",900]]
+};
+
+let cart = {};
+
+const container = document.getElementById("menuContainer");
+
+for(let section in foods){
+
+let sectionDiv = document.createElement("div");
+sectionDiv.className = "section";
+
+let title = document.createElement("h2");
+title.innerText = section;
+
+let scroll = document.createElement("div");
+scroll.className = "scroll";
+
+foods[section].forEach(item=>{
+let name=item[0];
+let price=item[1];
+
+let card=document.createElement("div");
+card.className="card";
+
+card.innerHTML=`
+<img src="https://source.unsplash.com/300x200/?food,${name}">
+<div class="card-body">
+<h4>${name}</h4>
+<p class="price">₦${price}</p>
+
+<div class="qty-control">
+<button class="qty-btn" onclick="updateItem('${name}',${price},-1)">-</button>
+<span id="${name}">0</span>
+<button class="qty-btn" onclick="updateItem('${name}',${price},1)">+</button>
+</div>
+</div>
+`;
+
+scroll.appendChild(card);
+});
+
+sectionDiv.appendChild(title);
+sectionDiv.appendChild(scroll);
+container.appendChild(sectionDiv);
+}
+
+function updateItem(name,price,change){
+if(!cart[name]) cart[name]=0;
+
+cart[name]+=change;
+if(cart[name]<0) cart[name]=0;
+
+document.getElementById(name).innerText=cart[name];
+renderCart();
+}
+
+function renderCart(){
+let items="";
+let total=0;
+let count=0;
+
+for(let item in cart){
+if(cart[item]>0){
+let t=cart[item]*getPrice(item);
+total+=t;
+count+=cart[item];
+items+=`<div>${item} x${cart[item]} = ₦${t}</div>`;
+}
+}
+
+document.getElementById("cartItems").innerHTML=items;
+document.getElementById("totalPrice").innerText=total;
+document.getElementById("cartCount").innerText=count;
+}
+
+function getPrice(name){
+for(let sec in foods){
+for(let item of foods[sec]){
+if(item[0]===name) return item[1];
+}
+}
+}
+
+function toggleCart(){
+document.getElementById("cartPanel").classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
