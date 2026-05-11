@@ -50,10 +50,16 @@ app.post('/api/create-order', async (req, res) => {
 // ── GET /api/orders ───────────────────────────────────────────────────────────
 app.get('/api/orders', async (req, res) => {
   try {
-    const { data, error } = await supabase
+    const { email } = req.query;
+
+    let query = supabase
       .from('orders')
       .select('*')
       .order('created_at', { ascending: false });
+
+    if (email) query = query.eq('customer_email', email);
+
+    const { data, error } = await query;
 
     if (error) throw error;
 
