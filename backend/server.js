@@ -101,6 +101,24 @@ app.get('/api/admin/orders', async (req, res) => {
   }
 });
 
+// ── PATCH /api/orders/:id/status ─────────────────────────────────────────────
+app.patch('/api/orders/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { data, error } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('id', req.params.id)
+      .select()
+      .single();
+    if (error) throw error;
+    res.json({ success: true, order: data });
+  } catch (err) {
+    console.error('Update status error:', err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // ── Start server ──────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
